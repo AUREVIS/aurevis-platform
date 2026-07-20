@@ -77,3 +77,18 @@ html,body,#root{max-width:100%;overflow-x:hidden}
   .bottle-puree{left:15%;height:78%}.bottle-syrup{right:9%;height:68%}
   .flavor-chip-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+
+/* V2.2 SUPABASE LIVE CATALOG */
+.catalog-heading-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;max-width:none}
+.catalog-source{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:999px;background:#fff;border:1px solid #d9cbb3;font-weight:800;font-size:.78rem}
+.catalog-source.supabase span{color:#237a58}.catalog-source.fallback span{color:#a06e24}
+.catalog-source button{display:grid;place-items:center;border:0;background:transparent;color:#08251c}
+.catalog-tools{display:grid;gap:14px;margin-bottom:10px}.catalog-categories{display:flex;gap:8px;flex-wrap:wrap}
+.catalog-categories button{padding:9px 13px;border-radius:999px;border:1px solid #d9cbb3;background:#fff;color:#08251c;font-weight:800;text-transform:capitalize}
+.catalog-categories button.active{background:#08251c;color:#fff;border-color:#08251c}
+.product-meta{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.product-meta small{padding:5px 8px;border-radius:999px;background:#f3eadb;color:#8a6526;font-weight:800}
+.product-hy{font-size:.82rem!important;margin:4px 0!important}
+.real-product-image{display:block!important;width:100%;height:100%;object-fit:contain;padding:15px}
+.spin{animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.catalog-heading-row{display:block}.catalog-source{margin-top:16px;width:max-content}}
