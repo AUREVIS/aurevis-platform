@@ -21,7 +21,7 @@ export default function CatalogPage() {
 
       <label className="catalog-search">
         <Search size={20} />
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Փնտրել՝ Mojito, Vanilla, Mango..." />
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Փնտրել՝ Mojito, Vanilla, Raspberry..." />
       </label>
 
       <div className="catalog-count">{visible.length} ապրանք</div>
@@ -29,7 +29,16 @@ export default function CatalogPage() {
       <div className="product-grid">
         {visible.map((product) => (
           <article className="product-card" key={product.id}>
-            <div className="product-image-wrap"><img src={product.image} alt={product.name} /></div>
+            <div className="product-art" style={{"--accent": product.accent}}>
+              <div className="mini-bottle">
+                <span className="mini-cap" />
+                <div className="mini-label">
+                  <small>AUREVIS</small>
+                  <b>{product.name}</b>
+                  <span>PREMIUM SYRUP</span>
+                </div>
+              </div>
+            </div>
             <div>
               <span>Professional Syrup</span>
               <h2>{product.name}</h2>

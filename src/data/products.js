@@ -38,12 +38,24 @@ export const flavors = [
   "Ginger"
 ];
 
+const accentMap = {
+  "Chocolate":"#5a3327","Mojito":"#5d9f64","Passion Fruit":"#d89a2b","Berry Mix":"#8b3f69",
+  "Caramel":"#a86d32","Vanilla":"#d9bd7a","Pistachio":"#80935b","Blueberry":"#405a8c",
+  "Raspberry":"#b93e57","Lime":"#77a83d","Lemon":"#d6b72d","Pineapple":"#d49e32",
+  "Banana":"#d6b94c","Cherry":"#a52f41","Blue Curaçao":"#2f87b9","Orange":"#d8752b",
+  "Apple":"#91a948","Black Currant":"#4d3d68","Peach":"#d68b67","Apricot":"#d8914c",
+  "Coconut":"#c9b79d","Lychee":"#c98b95","Sea Buckthorn":"#d9852c","Pomegranate":"#a83f48",
+  "Watermelon":"#c65562","Melon":"#9db75c","Yuzu":"#c8a92d","Salted Caramel":"#9c6a3f",
+  "Pear":"#93a856","Rhubarb":"#9d4c63","Cinnamon":"#8a5138","Green Apple":"#6c9c42",
+  "Grape":"#6c4d81","Grapefruit":"#d46f65","Hazelnut":"#8a6544","Mint":"#4e9770","Ginger":"#b58543"
+};
+
 export const products = flavors.map((name, index) => ({
   id: `syrup-${index + 1}`,
   category: "syrup",
   name,
   volume: "1 L",
   price: 4400,
-  image: index % 2 === 0 ? "/assets/flavors_board_1.png" : "/assets/flavors_board_2.png",
+  accent: accentMap[name] || "#9a762e",
   description: `${name} professional syrup for cafés, bars and HoReCa.`,
 }));

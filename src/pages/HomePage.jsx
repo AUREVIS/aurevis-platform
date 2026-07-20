@@ -1,5 +1,6 @@
 import { ArrowRight, BadgeCheck, Calculator, ChefHat, Sparkles, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
+import { flavors } from "../data/products";
 
 const stats = [
   ["37+", "Սիրոպի համ"],
@@ -19,9 +20,15 @@ export default function HomePage() {
         <div className="hero-copy">
           <p className="eyebrow">AUREVIS · PREMIUM HORECA</p>
           <h1>From flavor<br />to signature drinks.</h1>
-          <p>Պրեմիում սիրոպներ, մրգային պյուրեներ և ամբողջական HoReCa լուծումներ՝ սրճարանների, ռեստորանների, հյուրանոցների և bakery նախագծերի համար։</p>
+          <p>
+            Պրեմիում սիրոպներ, մրգային պյուրեներ և ամբողջական HoReCa լուծումներ՝
+            սրճարանների, ռեստորանների, հյուրանոցների և bakery նախագծերի համար։
+          </p>
+
           <div className="hero-buttons">
-            <Link className="button gold" to="/catalog">Դիտել 37 համերը <ArrowRight size={18} /></Link>
+            <Link className="button gold" to="/catalog">
+              Դիտել 37 համերը <ArrowRight size={18} />
+            </Link>
             <Link className="button glass" to="/academy">Բացել Academy-ն</Link>
           </div>
 
@@ -33,12 +40,24 @@ export default function HomePage() {
         </div>
 
         <div className="hero-product-stage">
-          <div className="stage-card">
-            <img src="/assets/bottle_reference.jpeg" alt="AUREVIS bottle style" />
-            <div><span>PREMIUM PRODUCT EXPERIENCE</span><b>Շշի ձևին համապատասխան պիտակ</b></div>
+          <div className="bottle-showcase">
+            <div className="bottle bottle-puree">
+              <span className="pump" />
+              <div className="bottle-label">
+                <small>AUREVIS</small>
+                <b>STRAWBERRY</b>
+                <span>PREMIUM PURÉE</span>
+              </div>
+            </div>
+            <div className="bottle bottle-syrup">
+              <span className="cap" />
+              <div className="bottle-label">
+                <small>AUREVIS</small>
+                <b>PASSION FRUIT</b>
+                <span>PREMIUM SYRUP</span>
+              </div>
+            </div>
           </div>
-          <div className="floating-orb orb-one" />
-          <div className="floating-orb orb-two" />
         </div>
       </section>
 
@@ -53,15 +72,16 @@ export default function HomePage() {
         <div className="section-heading">
           <p className="eyebrow dark">EXPLORE THE COLLECTION</p>
           <h2>37 համ՝ մեկ պրոֆեսիոնալ համակարգում</h2>
-          <p>Սիրոպներ սուրճի, թեյի, լիմոնադի, mocktail-ի, cocktail-ի և dessert pairing-ի համար։</p>
+          <p>Ամբողջական սիրոպների շարք՝ սուրճի, թեյի, լիմոնադի, mocktail-ի, cocktail-ի և dessert pairing-ի համար։</p>
         </div>
 
-        <div className="flavor-board-grid">
-          <article><img src="/assets/flavors_board_1.png" alt="AUREVIS flavors list" /></article>
-          <article><img src="/assets/flavors_board_2.png" alt="AUREVIS flavors list" /></article>
+        <div className="flavor-chip-grid">
+          {flavors.map((flavor) => <span key={flavor}>{flavor}</span>)}
         </div>
 
-        <Link to="/catalog" className="collection-link">Բացել ամբողջ կատալոգը <ArrowRight size={18} /></Link>
+        <Link to="/catalog" className="collection-link">
+          Բացել ամբողջ կատալոգը <ArrowRight size={18} />
+        </Link>
       </section>
 
       <section className="story premium-story">

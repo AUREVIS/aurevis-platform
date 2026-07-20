@@ -49,3 +49,31 @@
 .product-image-wrap{height:220px;background:#f2eadc;overflow:hidden}.product-image-wrap img{width:100%;height:100%;object-fit:cover}.product-card img{height:100%}
 @media(max-width:1000px){.hero-product-stage{opacity:.45;width:45%}.premium-hero .hero-copy{max-width:65%}}
 @media(max-width:760px){.premium-hero{min-height:900px}.premium-hero .hero-copy{max-width:none;padding-bottom:350px}.hero-product-stage{left:18px;right:18px;top:auto;bottom:36px;width:auto;height:300px;opacity:1}.hero-stats{grid-template-columns:1fr 1fr}.flavor-board-grid{grid-template-columns:1fr}}
+
+
+/* V2.1 FIX — remove screenshot overflow */
+html,body,#root{max-width:100%;overflow-x:hidden}
+.hero-product-stage{display:flex;align-items:center;justify-content:center}
+.bottle-showcase{position:relative;width:100%;height:100%}
+.bottle{position:absolute;bottom:4%;border-radius:36% 36% 16% 16% / 18% 18% 10% 10%;box-shadow:0 35px 45px rgba(0,0,0,.45);overflow:visible}
+.bottle-puree{left:12%;width:42%;height:82%;background:linear-gradient(90deg,#6f1730,#c33f5e 48%,#7a1733)}
+.bottle-syrup{right:6%;width:30%;height:72%;background:linear-gradient(90deg,#7d431d,#d18c42 50%,#864a22);border-radius:24% 24% 13% 13% / 11% 11% 8% 8%}
+.pump{position:absolute;left:29%;top:-14%;width:48%;height:16%;background:#171b19;border-radius:12px 12px 6px 6px}
+.pump:after{content:"";position:absolute;left:52%;top:-28%;width:74%;height:42%;background:#171b19;border-radius:8px 12px 4px 4px}
+.cap{position:absolute;left:22%;top:-8%;width:56%;height:10%;background:linear-gradient(#c6b389,#81724f);border-radius:7px 7px 3px 3px}
+.bottle-label{position:absolute;left:10%;right:10%;top:34%;padding:20px 9px;text-align:center;border:1px solid rgba(181,137,44,.65);border-radius:18px;background:rgba(255,251,241,.92);color:#7b5b22;box-shadow:inset 0 0 25px rgba(190,145,54,.08)}
+.bottle-label small,.bottle-label b,.bottle-label span{display:block}.bottle-label small{font:700 1.15rem Georgia;letter-spacing:.12em}.bottle-label b{margin-top:13px;font:700 clamp(.85rem,1.4vw,1.25rem) Georgia}.bottle-label span{margin-top:7px;font-size:.56rem;letter-spacing:.14em}
+.flavor-chip-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.flavor-chip-grid span{padding:14px 12px;border-radius:16px;border:1px solid #dfd2ba;background:linear-gradient(180deg,#fffdf8,#f3eadb);color:#08251c;font-weight:800;text-align:center}
+.product-art{height:250px;display:grid;place-items:center;background:radial-gradient(circle at 50% 25%,color-mix(in srgb,var(--accent) 24%,white),#f6efe4 68%)}
+.mini-bottle{position:relative;width:92px;height:205px;border-radius:22px 22px 13px 13px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 76%,black),var(--accent),color-mix(in srgb,var(--accent) 70%,black));box-shadow:0 20px 24px rgba(0,0,0,.25)}
+.mini-cap{position:absolute;left:25%;top:-18px;width:50%;height:25px;border-radius:6px;background:linear-gradient(#c9b783,#746341)}
+.mini-label{position:absolute;left:8px;right:8px;top:56px;padding:16px 5px;text-align:center;border:1px solid #c49a44;border-radius:10px;background:#fffaf0;color:#75561f}
+.mini-label small,.mini-label b,.mini-label span{display:block}.mini-label small{font:700 .78rem Georgia}.mini-label b{font:700 .64rem Georgia;margin-top:8px;word-break:break-word}.mini-label span{font-size:.42rem;margin-top:5px;letter-spacing:.08em}
+.product-card img{display:none!important}
+@media(max-width:900px){.flavor-chip-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){
+  .hero-product-stage{height:310px!important}
+  .bottle-puree{left:15%;height:78%}.bottle-syrup{right:9%;height:68%}
+  .flavor-chip-grid{grid-template-columns:repeat(2,1fr)}
+}
