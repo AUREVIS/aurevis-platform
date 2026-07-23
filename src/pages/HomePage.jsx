@@ -83,7 +83,41 @@ export default function HomePage() {
           Բացել ամբողջ կատալոգը <ArrowRight size={18} />
         </Link>
       </section>
+<section className="featured-products">
+  <div className="section-heading">
+    <p className="eyebrow dark">FEATURED PRODUCTS</p>
+    <h2>Մեր ամենապահանջված համերը</h2>
+    <p>Ընտրված համեր՝ սուրճի, լիմոնադի, cocktail-ի և dessert-ի համար։</p>
+  </div>
 
+  <div className="featured-grid">
+    {[
+      { name: "Strawberry", type: "Premium Purée", accent: "#b72f55" },
+      { name: "Passion Fruit", type: "Premium Syrup", accent: "#d88632" },
+      { name: "Mango", type: "Premium Purée", accent: "#d9a42e" },
+      { name: "Blue Curacao", type: "Premium Syrup", accent: "#2d84b7" },
+    ].map((item) => (
+      <article className="featured-card" key={item.name}>
+        <div className="product-art" style={{ "--accent": item.accent }}>
+          <div className="mini-bottle">
+            <span className="mini-cap" />
+            <div className="mini-label">
+              <small>AUREVIS</small>
+              <b>{item.name}</b>
+              <span>{item.type}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="featured-card-copy">
+          <h3>{item.name}</h3>
+          <p>{item.type}</p>
+          <Link to="/catalog">Տեսնել կատալոգում <ArrowRight size={16} /></Link>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
       <section className="story premium-story">
         <div>
           <p className="eyebrow dark">AUREVIS PLATFORM</p>
@@ -97,6 +131,5 @@ export default function HomePage() {
         </div>
         <img src="/assets/desserts.jpg" alt="AUREVIS products" />
       </section>
-    </>
-  );
+    </>  );
 }
