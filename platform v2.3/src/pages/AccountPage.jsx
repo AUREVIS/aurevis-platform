@@ -157,10 +157,6 @@ export default function AccountPage() {
           {location.state?.adminDenied && (
             <p className="notice-banner">Այս բաժինը հասանելի է միայն AUREVIS Admin հաշվին։</p>
           )}
-          {(profileError || dataError) && (
-            <p className="notice-banner warning">Տվյալների բազայի V2.3 թարմացումը դեռ չի միացվել։</p>
-          )}
-
           <div className="account-topbar">
             <div>
               <span>Բարի գալուստ</span>
