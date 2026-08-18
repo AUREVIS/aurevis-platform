@@ -40,3 +40,19 @@ Open the repository, choose **Add file → Upload files**, unzip this package, a
 4. Netlify deploys automatically.
 
 The catalog falls back safely to local demo products when Supabase is unavailable.
+
+## V2.3 — Account, HoReCa and Admin
+
+1. Run `supabase/AUREVIS_V2_3_AUTH_ACCOUNT_ADMIN.sql` in Supabase SQL Editor.
+2. In Supabase → Authentication → Providers → Email, enable Email signups.
+3. Register the real owner account once from `/account`.
+4. Promote only that account in SQL Editor:
+
+```sql
+update public.profiles
+set role = 'admin'
+where email = 'YOUR_REAL_ADMIN_EMAIL';
+```
+
+The public navigation hides Admin. The protected dashboard is available only to
+accounts with `profiles.role = 'admin'`; its separate login URL is `/admin/login`.
