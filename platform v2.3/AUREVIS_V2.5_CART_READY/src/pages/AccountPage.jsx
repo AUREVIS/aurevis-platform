@@ -17,6 +17,17 @@ const horecaStatusLabels = {
   rejected: "Դիմումը մերժված է",
 };
 
+const orderStatusLabels = {
+  new: "Նոր պատվեր",
+  pending: "Սպասում է հաստատման",
+  confirmed: "Հաստատված",
+  preparing: "Պատրաստվում է",
+  delivery: "Առաքվում է",
+  delivering: "Առաքվում է",
+  completed: "Ավարտված",
+  cancelled: "Չեղարկված",
+};
+
 function AuthForm() {
   const { configured, signIn, signUp } = useAuth();
   const [mode, setMode] = useState("login");
@@ -200,7 +211,9 @@ export default function AccountPage() {
                   <article key={order.id}>
                     <div><b>#{order.order_number}</b><span>{new Date(order.created_at).toLocaleDateString("hy-AM")}</span></div>
                     <strong>{money(order.total_amount)}</strong>
-                    <em>{order.status}</em>
+                    <em className={`order-status ${order.status}`}>
+                      {orderStatusLabels[order.status] || order.status}
+                    </em>
                   </article>
                 ))}
               </div>
