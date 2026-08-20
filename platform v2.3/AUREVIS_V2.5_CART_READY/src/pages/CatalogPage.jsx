@@ -1,9 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { RefreshCw, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { getCatalogProducts } from "../lib/catalog";
 import { useCart } from "../context/CartContext";
 
 const money = (value) => new Intl.NumberFormat("hy-AM").format(value) + " ֏";
+
+const categoryLabels = {
+  syrups: "Օշարակներ",
+  purees: "Պյուրեներ",
+  bakery: "Խմորեղեն",
+  desserts: "Դեսերտներ",
+  bread: "Հաց",
+  equipment: "Սարքավորումներ",
+  "bar-tools": "Բար գործիքներ",
+  other: "Այլ ապրանքներ",
+};
 
 export default function CatalogPage() {
   const { addItem } = useCart();
@@ -46,13 +57,7 @@ export default function CatalogPage() {
         <div>
           <p className="eyebrow dark">AUREVIS CATALOG</p>
           <h1>Պրոֆեսիոնալ կատալոգ</h1>
-          <p>Ապրանքները ավտոմատ թարմացվում են Supabase-ից։</p>
-        </div>
-        <div className={`catalog-source ${source}`}>
-          <span>{source === "supabase" ? "● Supabase Live" : source === "fallback" ? "● Demo fallback" : "Բեռնվում է"}</span>
-          <button onClick={loadCatalog} disabled={loading} aria-label="Refresh catalog">
-            <RefreshCw size={18} className={loading ? "spin" : ""} />
-          </button>
+          <p>Պրեմիում օշարակներ, մրգային պյուրեներ և HoReCa լուծումներ՝ մեկ վայրում։</p>
         </div>
       </div>
 
@@ -67,7 +72,7 @@ export default function CatalogPage() {
           {categories.map((item) => (
             <button key={item} className={category === item ? "active" : ""}
               onClick={() => setCategory(item)}>
-              {item === "all" ? "Բոլորը" : item}
+              {item === "all" ? "Բոլորը" : categoryLabels[item] || item}
             </button>
           ))}
         </div>
