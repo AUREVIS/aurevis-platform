@@ -18,6 +18,7 @@ export default function AdminPage() {
     setError("");
     const [profilesResult, ordersResult] = await Promise.all([
       supabase.from("profiles").select("id, email, full_name, phone, account_type, company_name, role, horeca_status, loyalty_tier, created_at")
+        .eq("is_archived", false)
         .order("created_at", { ascending: false }),
       supabase.from("orders").select("id, order_number, status, total_amount, created_at, profiles(full_name, email)")
         .order("created_at", { ascending: false }).limit(50),
