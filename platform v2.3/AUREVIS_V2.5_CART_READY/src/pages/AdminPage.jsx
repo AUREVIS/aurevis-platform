@@ -65,6 +65,17 @@ export default function AdminPage() {
     }
   }
 
+  async function updateOrderStatus(orderId, nextStatus) {
+    setError("");
+    const { error: updateError } = await supabase
+      .from("orders")
+      .update({ status: nextStatus, updated_at: new Date().toISOString() })
+      .eq("id", orderId);
+    if (updateError) setError(updateError.message);
+    else setOrders((current) => current.map((order) =>
+      order.id === orderId ? { ...order, status: nextStatus } : order));
+  }
+
   return (
     <section className="page admin-page">
       <div className="admin-heading">
@@ -135,7 +146,19 @@ export default function AdminPage() {
               <article key={order.id}>
                 <div><b>#{order.order_number}</b><span>{order.profiles?.full_name || order.profiles?.email}</span></div>
                 <strong>{money(order.total_amount)}</strong>
-                <em>{order.status}</em>
+                <select
+                  className={`order-status-select ${order.status}`}
+                  value={order.status}
+                  onChange={(event) => updateOrderStatus(order.id, event.target.value)}
+                  aria-label={`Փոխել ${order.order_number} պատվերի կարգավիճակը`}
+                >
+                  <option value="new">Նոր</option>
+                  <option value="confirmed">Հաստատված</option>
+                  <option value="preparing">Պատրաստվում է</option>
+                  <option value="delivery">Առաքվում է</option>
+                  <option value="completed">Ավարտված</option>
+                  <option value="cancelled">Չեղարկված</option>
+                </select>
               </article>
             ))}
           </div>
