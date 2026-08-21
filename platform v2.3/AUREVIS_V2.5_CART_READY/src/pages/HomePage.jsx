@@ -39,26 +39,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="hero-product-stage">
-          <div className="bottle-showcase">
-            <div className="bottle bottle-puree">
-              <span className="pump" />
-              <div className="bottle-label">
-                <small>AUREVIS</small>
-                <b>STRAWBERRY</b>
-                <span>PREMIUM PURÉE</span>
-              </div>
-            </div>
-            <div className="bottle bottle-syrup">
-              <span className="cap" />
-              <div className="bottle-label">
-                <small>AUREVIS</small>
-                <b>PASSION FRUIT</b>
-                <span>PREMIUM SYRUP</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       <section className="feature-strip premium-strip">
