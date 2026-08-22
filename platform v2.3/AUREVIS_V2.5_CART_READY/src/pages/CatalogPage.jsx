@@ -30,13 +30,15 @@ const labelFiles = {
 const slugName = (value = "") => value.toLowerCase().trim().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
 
 function ProductVisual({ product }) {
-  if (product.image) {
-    return <img className="real-product-image" src={product.image} alt={product.name} />;
-  }
-
   const category = slugName(product.category);
   const isPuree = category === "puree" || category === "purees";
   const isBottle = isPuree || category === "syrup" || category === "syrups";
+
+  // Bottle categories always use the new AUREVIS masters. Some older database
+  // rows still contain obsolete image URLs, which otherwise render as blanks.
+  if (!isBottle && product.image) {
+    return <img className="real-product-image" src={product.image} alt={product.name} />;
+  }
 
   if (!isBottle) {
     return (
