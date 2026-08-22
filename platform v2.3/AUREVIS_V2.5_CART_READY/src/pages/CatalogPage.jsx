@@ -51,9 +51,9 @@ function ProductVisual({ product }) {
   const label = labelFiles[slugName(product.name)];
   return (
     <div className={`catalog-real-bottle ${isPuree ? "puree" : "syrup"}`}>
-      <img className="catalog-bottle-master" src={`/assets/catalog/${isPuree ? "puree" : "syrup"}-master.png`} alt={product.name} />
+      <img className="catalog-bottle-master" src={`/assets/AUREVIS_CATALOG_IMAGES/catalog/${isPuree ? "puree" : "syrup"}-master.png`} alt={product.name} />
       {label ? (
-        <img className="catalog-bottle-label" src={`/assets/catalog/labels/${label}.png`} alt="" />
+        <img className="catalog-bottle-label" src={`/assets/AUREVIS_CATALOG_IMAGES/catalog/labels/${label}.png`} alt="" />
       ) : (
         <div className="catalog-generic-label"><small>AUREVIS</small><b>{product.name}</b><span>{isPuree ? "PREMIUM PURÉE" : "PREMIUM SYRUP"}</span></div>
       )}
