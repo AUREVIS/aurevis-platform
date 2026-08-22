@@ -1,10 +1,69 @@
 import { useEffect, useMemo, useState } from "react";
-import { RefreshCw, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { getCatalogProducts } from "../lib/catalog";
+import { useCart } from "../context/CartContext";
 
 const money = (value) => new Intl.NumberFormat("hy-AM").format(value) + " ֏";
 
+const categoryLabels = {
+  syrups: "Օշարակներ",
+  purees: "Պյուրեներ",
+  bakery: "Խմորեղեն",
+  desserts: "Դեսերտներ",
+  bread: "Հաց",
+  equipment: "Սարքավորումներ",
+  "bar-tools": "Բար գործիքներ",
+  other: "Այլ ապրանքներ",
+};
+
+const labelFiles = {
+  "passion fruit": "passion-fruit", passionfruit: "passion-fruit",
+  "berry mix": "berry-mix", berrymix: "berry-mix", caramel: "caramel",
+  blueberry: "blueberry", lime: "lime", lemon: "lemon", raspberry: "raspberry",
+  strawberry: "strawberry", "sea buckthorn": "sea-buckthorn", seabuckthorn: "sea-buckthorn",
+  peach: "peach", kiwi: "kiwi", coconut: "coconut", pomegranate: "pomegranate",
+  mango: "mango", pineapple: "pineapple", cherry: "cherry",
+  "black currant": "black-currant", blackcurrant: "black-currant",
+  apricot: "apricot", yuzu: "yuzu", pear: "pear", mandarine: "mandarine", mandarin: "mandarine",
+};
+
+const slugName = (value = "") => value.toLowerCase().trim().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
+
+function ProductVisual({ product }) {
+  const category = slugName(product.category);
+  const isPuree = category === "puree" || category === "purees";
+  const isBottle = isPuree || category === "syrup" || category === "syrups";
+
+  // Bottle categories always use the new AUREVIS masters. Some older database
+  // rows still contain obsolete image URLs, which otherwise render as blanks.
+  if (!isBottle && product.image) {
+    return <img className="real-product-image" src={product.image} alt={product.name} />;
+  }
+
+  if (!isBottle) {
+    return (
+      <div className="catalog-category-art" aria-label={product.name}>
+        <span>AUREVIS</span><b>{product.name}</b>
+      </div>
+    );
+  }
+
+  const label = labelFiles[slugName(product.name)];
+  return (
+    <div className={`catalog-real-bottle ${isPuree ? "puree" : "syrup"}`}>
+      <img className="catalog-bottle-master" src={`/assets/AUREVIS_CATALOG_IMAGES/catalog/${isPuree ? "puree" : "syrup"}-master.png`} alt={product.name} />
+      {label ? (
+        <img className="catalog-bottle-label" src={`/assets/AUREVIS_CATALOG_IMAGES/catalog/labels/${label}.png`} alt="" />
+      ) : (
+        <div className="catalog-generic-label"><small>AUREVIS</small><b>{product.name}</b><span>{isPuree ? "PREMIUM PURÉE" : "PREMIUM SYRUP"}</span></div>
+      )}
+    </div>
+  );
+}
+
 export default function CatalogPage() {
+  const { addItem } = useCart();
+  const [addedId, setAddedId] = useState(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [products, setProducts] = useState([]);
@@ -43,13 +102,7 @@ export default function CatalogPage() {
         <div>
           <p className="eyebrow dark">AUREVIS CATALOG</p>
           <h1>Պրոֆեսիոնալ կատալոգ</h1>
-          <p>Ապրանքները ավտոմատ թարմացվում են Supabase-ից։</p>
-        </div>
-        <div className={`catalog-source ${source}`}>
-          <span>{source === "supabase" ? "● Supabase Live" : source === "fallback" ? "● Demo fallback" : "Բեռնվում է"}</span>
-          <button onClick={loadCatalog} disabled={loading} aria-label="Refresh catalog">
-            <RefreshCw size={18} className={loading ? "spin" : ""} />
-          </button>
+          <p>Պրեմիում օշարակներ, մրգային պյուրեներ և HoReCa լուծումներ՝ մեկ վայրում։</p>
         </div>
       </div>
 
@@ -64,7 +117,7 @@ export default function CatalogPage() {
           {categories.map((item) => (
             <button key={item} className={category === item ? "active" : ""}
               onClick={() => setCategory(item)}>
-              {item === "all" ? "Բոլորը" : item}
+              {item === "all" ? "Բոլորը" : categoryLabels[item] || item}
             </button>
           ))}
         </div>
@@ -76,18 +129,7 @@ export default function CatalogPage() {
         {visible.map((product) => (
           <article className="product-card" key={product.id}>
             <div className="product-art" style={{"--accent": product.accent}}>
-              {product.image ? (
-                <img className="real-product-image" src={product.image} alt={product.name} />
-              ) : (
-                <div className="mini-bottle">
-                  <span className="mini-cap" />
-                  <div className="mini-label">
-                    <small>AUREVIS</small>
-                    <b>{product.name}</b>
-                    <span>{product.category === "purees" ? "PREMIUM PURÉE" : "PREMIUM SYRUP"}</span>
-                  </div>
-                </div>
-              )}
+              <ProductVisual product={product} />
             </div>
             <div>
               <span>{product.categoryName || product.category || "AUREVIS"}</span>
@@ -100,7 +142,11 @@ export default function CatalogPage() {
               </div>
               <div className="price-row">
                 <b>{money(product.price)}</b>
-                <button>+ Ավելացնել</button>
+                <button onClick={() => {
+                  addItem(product);
+                  setAddedId(product.id);
+                  window.setTimeout(() => setAddedId(null), 900);
+                }}>{addedId === product.id ? "Ավելացված է ✓" : "+ Ավելացնել"}</button>
               </div>
             </div>
           </article>
