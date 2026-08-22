@@ -82,7 +82,6 @@ html,body,#root{max-width:100%;overflow-x:hidden}
 .mini-cap{position:absolute;left:25%;top:-18px;width:50%;height:25px;border-radius:6px;background:linear-gradient(#c9b783,#746341)}
 .mini-label{position:absolute;left:8px;right:8px;top:56px;padding:16px 5px;text-align:center;border:1px solid #c49a44;border-radius:10px;background:#fffaf0;color:#75561f}
 .mini-label small,.mini-label b,.mini-label span{display:block}.mini-label small{font:700 .78rem Georgia}.mini-label b{font:700 .64rem Georgia;margin-top:8px;word-break:break-word}.mini-label span{font-size:.42rem;margin-top:5px;letter-spacing:.08em}
-.product-card img{display:none!important}
 @media(max-width:900px){.flavor-chip-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){
   .hero-product-stage{height:310px!important}
