@@ -147,3 +147,46 @@ html,body,#root{max-width:100%;overflow-x:hidden}
 .admin-orders article{background:#ffffff0b}.admin-orders article span{color:#9fb4ab}.admin-orders article em{background:#ffffff12;color:#e8c46d}.admin-empty{color:#9fb4ab}
 @media(max-width:900px){.auth-shell{grid-template-columns:1fr}.account-summary{grid-template-columns:1fr}.admin-status-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.auth-card{padding:25px}.account-topbar,.admin-heading{align-items:flex-start;flex-direction:column}.account-topbar{padding:20px}.account-section{padding:18px}.order-list article{grid-template-columns:1fr auto}.order-list article em{grid-column:1/-1;width:max-content}.admin-status-grid{grid-template-columns:1fr}.admin-actions{flex-wrap:wrap}}
+/* AUREVIS catalog — smaller product images */
+
+.catalog-page .product-art {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  padding: 22px !important;
+}
+
+.catalog-page .product-art .real-product-image {
+  display: block !important;
+  width: 64% !important;
+  height: 64% !important;
+  max-width: 330px !important;
+  max-height: 330px !important;
+  object-fit: contain !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  border-radius: 20px;
+}
+
+@media (max-width: 900px) {
+  .catalog-page .product-art .real-product-image {
+    width: 70% !important;
+    height: 70% !important;
+    max-width: 290px !important;
+    max-height: 290px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .catalog-page .product-art {
+    padding: 16px !important;
+  }
+
+  .catalog-page .product-art .real-product-image {
+    width: 72% !important;
+    height: 72% !important;
+    max-width: 260px !important;
+    max-height: 260px !important;
+  }
+}
