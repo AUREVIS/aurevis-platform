@@ -378,3 +378,114 @@ html,body,#root{max-width:100%;overflow-x:hidden}
     padding: 17px;
   }
 }
+/* AUREVIS fixed header, wallet and cart */
+
+.sticky-main-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 2000 !important;
+  width: 100%;
+  background: rgba(255, 253, 248, 0.96) !important;
+  border-bottom: 1px solid rgba(154, 118, 46, 0.22);
+  box-shadow: 0 8px 30px rgba(6, 37, 28, 0.1);
+  backdrop-filter: blur(18px);
+}
+
+.header-wallet-link {
+  display: flex !important;
+  align-items: center;
+  gap: 9px;
+  min-width: 120px;
+  padding: 8px 13px;
+  border: 1px solid rgba(154, 118, 46, 0.28);
+  border-radius: 14px;
+  background: #f7f1e5;
+  color: #08251c;
+  text-decoration: none;
+}
+
+.header-wallet-link span,
+.header-wallet-link small,
+.header-wallet-link b {
+  display: block;
+}
+
+.header-wallet-link small {
+  margin-bottom: 2px;
+  color: #92712e;
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.header-wallet-link b {
+  color: #08251c;
+  font-size: 0.82rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.always-visible-cart {
+  position: relative;
+  display: grid !important;
+  width: 43px;
+  height: 43px;
+  place-items: center;
+  overflow: visible !important;
+  border-radius: 50%;
+  background: #08251c;
+  color: white !important;
+}
+
+.always-visible-cart .cart-count {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #c59a42;
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.home-contact-wrapper {
+  padding: 0 6vw 60px;
+}
+
+.home-contact-wrapper .catalog-contact-section {
+  margin-top: 30px;
+}
+
+@media (max-width: 900px) {
+  .header-wallet-link {
+    min-width: auto;
+    padding: 9px;
+  }
+
+  .header-wallet-link span {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .sticky-main-header {
+    min-height: 68px;
+  }
+
+  .desktop-action {
+    display: none !important;
+  }
+
+  .always-visible-cart {
+    width: 40px;
+    height: 40px;
+  }
+
+  .home-contact-wrapper {
+    padding: 0 16px 35px;
+  }
+}
