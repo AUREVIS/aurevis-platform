@@ -1,4 +1,11 @@
-import { ArrowRight, BadgeCheck, Calculator, ChefHat, Sparkles, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Calculator,
+  ChefHat,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { flavors } from "../data/products";
 
@@ -13,69 +20,223 @@ export default function HomePage() {
   return (
     <>
       <section className="hero premium-hero">
-        <img src="/assets/hero.jpg" alt="AUREVIS collection" className="hero-bg" />
+        <img
+          src="/assets/hero.jpg"
+          alt="AUREVIS collection"
+          className="hero-bg"
+        />
+
         <div className="hero-overlay" />
         <div className="hero-gold-glow" />
 
         <div className="hero-copy">
-          <p className="eyebrow">AUREVIS · PREMIUM HORECA</p>
-          <h1>From flavor<br />to signature drinks.</h1>
+          <p className="eyebrow">
+            AUREVIS · PREMIUM HORECA
+          </p>
+
+          <h1>
+            From flavor
+            <br />
+            to signature drinks.
+          </h1>
+
           <p>
-            Պրեմիում սիրոպներ, մրգային պյուրեներ և ամբողջական HoReCa լուծումներ՝
-            սրճարանների, ռեստորանների, հյուրանոցների և bakery նախագծերի համար։
+            Պրեմիում օշարակներ, մրգային պյուրեներ և
+            ամբողջական HoReCa լուծումներ՝ սրճարանների,
+            ռեստորանների, հյուրանոցների և bakery
+            նախագծերի համար։
           </p>
 
           <div className="hero-buttons">
-            <Link className="button gold" to="/catalog">
-              Դիտել 37 համերը <ArrowRight size={18} />
+            <Link
+              className="button gold"
+              to="/catalog"
+            >
+              Դիտել 37 համերը
+              <ArrowRight size={18} />
             </Link>
-            <Link className="button glass" to="/academy">Բացել Academy-ն</Link>
+
+            <Link
+              className="button glass"
+              to="/academy"
+            >
+              Բացել Academy-ն
+            </Link>
           </div>
 
           <div className="hero-stats">
             {stats.map(([value, label]) => (
-              <article key={label}><b>{value}</b><span>{label}</span></article>
+              <article key={label}>
+                <b>{value}</b>
+                <span>{label}</span>
+              </article>
             ))}
           </div>
         </div>
-
       </section>
 
       <section className="feature-strip premium-strip">
-        <article><BadgeCheck /><b>Պրեմիում որակ</b><span>Կայուն համ և արդյունք</span></article>
-        <article><ChefHat /><b>Recipe Academy</b><span>Բաղադրատոմսեր և խորհուրդներ</span></article>
-        <article><Calculator /><b>Profit Tools</b><span>Ինքնարժեք և շահույթ</span></article>
-        <article><Truck /><b>Առաքում</b><span>Ամբողջ Հայաստանում</span></article>
+        <article>
+          <BadgeCheck />
+          <b>Պրեմիում որակ</b>
+          <span>Կայուն համ և արդյունք</span>
+        </article>
+
+        <article>
+          <ChefHat />
+          <b>Recipe Academy</b>
+          <span>Բաղադրատոմսեր և խորհուրդներ</span>
+        </article>
+
+        <article>
+          <Calculator />
+          <b>Profit Tools</b>
+          <span>Ինքնարժեք և շահույթ</span>
+        </article>
+
+        <article>
+          <Truck />
+          <b>Անվճար առաքում</b>
+          <span>Ամբողջ Հայաստանում</span>
+        </article>
       </section>
 
       <section className="flavor-showcase">
         <div className="section-heading">
-          <p className="eyebrow dark">EXPLORE THE COLLECTION</p>
-          <h2>37 համ՝ մեկ պրոֆեսիոնալ համակարգում</h2>
-          <p>Ամբողջական սիրոպների շարք՝ սուրճի, թեյի, լիմոնադի, mocktail-ի, cocktail-ի և dessert pairing-ի համար։</p>
+          <p className="eyebrow dark">
+            EXPLORE THE COLLECTION
+          </p>
+
+          <h2>
+            37 համ՝ մեկ պրոֆեսիոնալ համակարգում
+          </h2>
+
+          <p>
+            Ամբողջական օշարակների շարք՝ սուրճի,
+            թեյի, լիմոնադի, mocktail-ի, cocktail-ի
+            և dessert pairing-ի համար։
+          </p>
         </div>
 
         <div className="flavor-chip-grid">
-          {flavors.map((flavor) => <span key={flavor}>{flavor}</span>)}
+          {flavors.map((flavor) => (
+            <span key={flavor}>
+              {flavor}
+            </span>
+          ))}
         </div>
 
-        <Link to="/catalog" className="collection-link">
-          Բացել ամբողջ կատալոգը <ArrowRight size={18} />
+        <Link
+          to="/catalog"
+          className="collection-link"
+        >
+          Բացել ամբողջ կատալոգը
+          <ArrowRight size={18} />
         </Link>
       </section>
 
       <section className="story premium-story">
         <div>
-          <p className="eyebrow dark">AUREVIS PLATFORM</p>
-          <h2>Ոչ միայն ապրանք։ Ամբողջական HoReCa գործընկերություն։</h2>
-          <p>Պատվերներ, Wallet, Bonus, Academy, սարքավորումներ և Admin Control Center՝ մեկ միասնական հարթակում։</p>
+          <p className="eyebrow dark">
+            AUREVIS PLATFORM
+          </p>
+
+          <h2>
+            Ոչ միայն ապրանք։ Ամբողջական HoReCa
+            գործընկերություն։
+          </h2>
+
+          <p>
+            Պատվերներ, Wallet, Bonus, Academy,
+            սարքավորումներ և Admin Control Center՝
+            մեկ միասնական հարթակում։
+          </p>
+
           <div className="story-points">
-            <span><Sparkles size={17} /> Menu & recipe support</span>
-            <span><Sparkles size={17} /> Equipment program</span>
-            <span><Sparkles size={17} /> Business calculators</span>
+            <span>
+              <Sparkles size={17} />
+              Menu & recipe support
+            </span>
+
+            <span>
+              <Sparkles size={17} />
+              Equipment program
+            </span>
+
+            <span>
+              <Sparkles size={17} />
+              Business calculators
+            </span>
           </div>
         </div>
-        <img src="/assets/desserts.jpg" alt="AUREVIS products" />
+
+        <img
+          src="/assets/desserts.jpg"
+          alt="AUREVIS products"
+        />
+      </section>
+
+      <section className="home-contact-wrapper">
+        <div className="catalog-contact-section">
+          <div className="catalog-contact-glow" />
+
+          <div className="catalog-contact-heading">
+            <span>AUREVIS · CONTACT</span>
+
+            <h2>
+              Պատվերներ և համագործակցություն
+            </h2>
+
+            <p>
+              Ապրանքների պատվերի, HoReCa
+              համագործակցության և գործնական
+              առաջարկների համար կապվեք մեզ հետ։
+            </p>
+          </div>
+
+          <div className="catalog-contact-cards">
+            <a
+              className="catalog-contact-card"
+              href="tel:+37491024232"
+            >
+              <span className="contact-icon">☎</span>
+
+              <div>
+                <small>Զանգահարել</small>
+                <b>091 024 232</b>
+                <p>Տնօրեն՝ Արման</p>
+              </div>
+            </a>
+
+            <a
+              className="catalog-contact-card"
+              href="mailto:aurevis@mail.ru"
+            >
+              <span className="contact-icon">✉</span>
+
+              <div>
+                <small>Էլեկտրոնային փոստ</small>
+                <b>aurevis@mail.ru</b>
+                <p>Պատվերներ և առաջարկներ</p>
+              </div>
+            </a>
+
+            <a
+              className="catalog-contact-card"
+              href="https://www.instagram.com/aureviscompany/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="contact-icon">◎</span>
+
+              <div>
+                <small>Instagram</small>
+                <b>@aureviscompany</b>
+                <p>Նորություններ և տեսականի</p>
+              </div>
+            </a>
+          </div>
+        </div>
       </section>
     </>
   );
