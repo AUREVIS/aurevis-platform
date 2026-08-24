@@ -1,150 +1,177 @@
-/* AUREVIS contact section */
+import { useEffect, useState } from "react";
+import {
+  Heart,
+  Menu,
+  ShoppingBag,
+  UserRound,
+  WalletCards,
+  X,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
-.catalog-contact-section {
-  position: relative;
-  overflow: hidden;
-  margin: 70px 0 20px;
-  padding: 55px 45px;
-  border: 1px solid rgba(213, 177, 99, 0.38);
-  border-radius: 34px;
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(202, 166, 91, 0.22),
-      transparent 38%
-    ),
-    linear-gradient(135deg, #06251c, #0c392c);
-  box-shadow: 0 28px 70px rgba(6, 37, 28, 0.18);
-  color: white;
-}
+const money = (value) =>
+  new Intl.NumberFormat("hy-AM").format(
+    Number(value || 0)
+  ) + " ֏";
 
-.catalog-contact-glow {
-  position: absolute;
-  width: 260px;
-  height: 260px;
-  right: -90px;
-  top: -110px;
-  border-radius: 50%;
-  background: rgba(218, 183, 106, 0.2);
-  filter: blur(25px);
-  pointer-events: none;
-}
+export default function Header() {
+  const { isAdmin, user, profile } = useAuth();
+  const { count } = useCart();
 
-.catalog-contact-heading {
-  position: relative;
-  max-width: 720px;
-  margin-bottom: 32px;
-}
+  const [menuOpen, setMenuOpen] = useState(false);
 
-.catalog-contact-heading > span {
-  display: block;
-  margin-bottom: 12px;
-  color: #d8b76e;
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.18em;
-}
+  const walletBalance = Number(
+    profile?.wallet_balance ??
+    profile?.bonus_balance ??
+    profile?.balance ??
+    0
+  );
 
-.catalog-contact-heading h2 {
-  margin: 0 0 14px;
-  color: white;
-  font-family: Georgia, serif;
-  font-size: clamp(2rem, 4vw, 3.6rem);
-  line-height: 1.05;
-}
+  useEffect(() => {
+    document.body.classList.toggle(
+      "mobile-menu-open",
+      menuOpen
+    );
 
-.catalog-contact-heading p {
-  max-width: 650px;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.76);
-  font-size: 1rem;
-  line-height: 1.7;
-}
+    return () =>
+      document.body.classList.remove(
+        "mobile-menu-open"
+      );
+  }, [menuOpen]);
 
-.catalog-contact-cards {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
+  const closeMenu = () => setMenuOpen(false);
 
-.catalog-contact-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 125px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.075);
-  color: white;
-  text-decoration: none;
-  backdrop-filter: blur(12px);
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    border-color 0.25s ease;
-}
+  return (
+    <header className="header sticky-main-header">
+      <NavLink
+        to="/"
+        className="brand"
+        onClick={closeMenu}
+      >
+        <img
+          src="/assets/logo.png"
+          alt="AUREVIS"
+        />
 
-.catalog-contact-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(216, 183, 110, 0.65);
-  background: rgba(255, 255, 255, 0.13);
-}
+        <span className="brand-copy">
+          <strong>AUREVIS</strong>
+          <small>PREMIUM COLLECTION</small>
+        </span>
+      </NavLink>
 
-.contact-icon {
-  display: grid;
-  flex: 0 0 48px;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border-radius: 50%;
-  background: #d1aa59;
-  color: #06251c;
-  font-size: 1.45rem;
-  font-weight: 900;
-}
+      <nav
+        className={menuOpen ? "open" : ""}
+        aria-label="Գլխավոր մենյու"
+      >
+        <NavLink to="/" onClick={closeMenu}>
+          Գլխավոր
+        </NavLink>
 
-.catalog-contact-card small,
-.catalog-contact-card b,
-.catalog-contact-card p {
-  display: block;
-}
+        <NavLink
+          to="/catalog"
+          onClick={closeMenu}
+        >
+          Կատալոգ
+        </NavLink>
 
-.catalog-contact-card small {
-  margin-bottom: 5px;
-  color: #d8b76e;
-  font-size: 0.75rem;
-  font-weight: 800;
-}
+        <NavLink
+          to="/academy"
+          onClick={closeMenu}
+        >
+          AUREVIS Academy
+        </NavLink>
 
-.catalog-contact-card b {
-  color: white;
-  font-size: 1rem;
-  overflow-wrap: anywhere;
-}
+        {isAdmin && (
+          <NavLink
+            to="/admin"
+            onClick={closeMenu}
+          >
+            Admin
+          </NavLink>
+        )}
 
-.catalog-contact-card p {
-  margin: 5px 0 0;
-  color: rgba(255, 255, 255, 0.66);
-  font-size: 0.82rem;
-}
+        <NavLink
+          className="mobile-account-link"
+          to="/account"
+          onClick={closeMenu}
+        >
+          {user
+            ? "Իմ հաշիվը"
+            : "Մուտք / Գրանցում"}
+        </NavLink>
+      </nav>
 
-@media (max-width: 900px) {
-  .catalog-contact-cards {
-    grid-template-columns: 1fr;
-  }
-}
+      <div className="header-actions">
+        <button
+          type="button"
+          className="desktop-action"
+          aria-label="Ընտրյալներ"
+        >
+          <Heart size={19} />
+        </button>
 
-@media (max-width: 600px) {
-  .catalog-contact-section {
-    margin-top: 45px;
-    padding: 38px 20px;
-    border-radius: 25px;
-  }
+        <NavLink
+          className="header-wallet-link"
+          to="/bonus"
+          aria-label="Հաշվեկշիռ"
+        >
+          <WalletCards size={19} />
 
-  .catalog-contact-card {
-    min-height: 105px;
-    padding: 17px;
-  }
+          <span>
+            <small>Հաշվեկշիռ</small>
+            <b>{money(walletBalance)}</b>
+          </span>
+        </NavLink>
+
+        <NavLink
+          className="cart-link always-visible-cart"
+          to="/cart"
+          aria-label={`Զամբյուղ՝ ${count} ապրանք`}
+        >
+          <ShoppingBag size={20} />
+
+          <span className="cart-count">
+            {count}
+          </span>
+        </NavLink>
+
+        <NavLink
+          className={user ? "signed-in" : ""}
+          to="/account"
+          aria-label="Հաշիվ"
+        >
+          <UserRound size={19} />
+        </NavLink>
+
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-label={
+            menuOpen
+              ? "Փակել մենյուն"
+              : "Բացել մենյուն"
+          }
+          aria-expanded={menuOpen}
+          onClick={() =>
+            setMenuOpen((open) => !open)
+          }
+        >
+          {menuOpen
+            ? <X size={22} />
+            : <Menu size={22} />}
+        </button>
+      </div>
+
+      {menuOpen && (
+        <button
+          type="button"
+          className="menu-backdrop"
+          aria-label="Փակել մենյուն"
+          onClick={closeMenu}
+        />
+      )}
+    </header>
+  );
 }
