@@ -489,3 +489,80 @@ html,body,#root{max-width:100%;overflow-x:hidden}
     padding: 0 16px 35px;
   }
 }
+/* AUREVIS sticky header — visible colors */
+
+.sticky-main-header .brand-copy strong {
+  color: #b98b2d !important;
+}
+
+.sticky-main-header .brand-copy small {
+  color: #8c7650 !important;
+}
+
+.sticky-main-header nav a {
+  color: #31594d !important;
+  font-weight: 750 !important;
+  opacity: 1 !important;
+}
+
+.sticky-main-header nav a:hover {
+  color: #9a762e !important;
+}
+
+.sticky-main-header nav a.active {
+  color: #b3872d !important;
+}
+
+.sticky-main-header nav a.active::after {
+  background: #c59a42 !important;
+}
+
+.sticky-main-header .header-actions .desktop-action,
+.sticky-main-header .header-actions > a:not(.always-visible-cart),
+.sticky-main-header .menu-toggle {
+  color: #08251c !important;
+  opacity: 1 !important;
+}
+
+.sticky-main-header .header-actions .desktop-action,
+.sticky-main-header .menu-toggle {
+  background: transparent !important;
+  border-color: rgba(8, 37, 28, 0.15) !important;
+}
+
+.sticky-main-header .header-wallet-link {
+  background: #f7f1e5 !important;
+  color: #08251c !important;
+}
+
+.sticky-main-header .header-wallet-link small {
+  color: #92712e !important;
+}
+
+.sticky-main-header .header-wallet-link b {
+  color: #08251c !important;
+}
+
+.sticky-main-header .always-visible-cart {
+  background: #08251c !important;
+  color: white !important;
+}
+
+.sticky-main-header .always-visible-cart svg {
+  color: white !important;
+}
+
+.sticky-main-header .cart-count {
+  background: #c59a42 !important;
+  color: white !important;
+}
+
+@media (max-width: 900px) {
+  .sticky-main-header nav {
+    background: #fffdf8 !important;
+  }
+
+  .sticky-main-header nav a {
+    color: #08251c !important;
+  }
+}
