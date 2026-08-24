@@ -377,7 +377,63 @@ export default function CatalogPage() {
             Փոխիր որոնման բառը կամ ընտրիր այլ բաժին։
           </p>
         </div>
-      )}
+      )}<div className="catalog-contact-section">
+  <div className="catalog-contact-glow" />
+
+  <div className="catalog-contact-heading">
+    <span>AUREVIS · CONTACT</span>
+
+    <h2>Պատվերներ և համագործակցություն</h2>
+
+    <p>
+      Ապրանքների պատվերի, HoReCa համագործակցության և
+      գործնական առաջարկների համար կապվեք մեզ հետ։
+    </p>
+  </div>
+
+  <div className="catalog-contact-cards">
+    <a
+      className="catalog-contact-card"
+      href="tel:+37491024232"
+    >
+      <span className="contact-icon">☎</span>
+
+      <div>
+        <small>Զանգահարել</small>
+        <b>091 024 232</b>
+        <p>Տնօրեն՝ Արման</p>
+      </div>
+    </a>
+
+    <a
+      className="catalog-contact-card"
+      href="mailto:aurevis@mail.ru"
+    >
+      <span className="contact-icon">✉</span>
+
+      <div>
+        <small>Էլեկտրոնային փոստ</small>
+        <b>aurevis@mail.ru</b>
+        <p>Պատվերներ և առաջարկներ</p>
+      </div>
+    </a>
+
+    <a
+      className="catalog-contact-card"
+      href="https://www.instagram.com/aureviscompany/"
+      target="_blank"
+      rel="noreferrer"
+    >
+      <span className="contact-icon">◎</span>
+
+      <div>
+        <small>Instagram</small>
+        <b>@aureviscompany</b>
+        <p>Նորություններ և տեսականի</p>
+      </div>
+    </a>
+  </div>
+</div>
     </section>
   );
 }
