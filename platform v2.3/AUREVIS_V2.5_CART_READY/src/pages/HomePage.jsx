@@ -7,10 +7,9 @@ import {
   Truck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { flavors } from "../data/products";
 
 const stats = [
-  ["37+", "Սիրոպի համ"],
+  ["37+", "Օշարակի համ"],
   ["10+", "Պյուրեի համ"],
   ["100+", "Recipe գաղափար"],
   ["HoReCa", "Գործընկերային լուծումներ"],
@@ -52,7 +51,7 @@ export default function HomePage() {
               className="button gold"
               to="/catalog"
             >
-              Դիտել 37 համերը
+              Դիտել կատալոգը
               <ArrowRight size={18} />
             </Link>
 
@@ -99,40 +98,6 @@ export default function HomePage() {
           <b>Անվճար առաքում</b>
           <span>Ամբողջ Հայաստանում</span>
         </article>
-      </section>
-
-      <section className="flavor-showcase">
-        <div className="section-heading">
-          <p className="eyebrow dark">
-            EXPLORE THE COLLECTION
-          </p>
-
-          <h2>
-            37 համ՝ մեկ պրոֆեսիոնալ համակարգում
-          </h2>
-
-          <p>
-            Ամբողջական օշարակների շարք՝ սուրճի,
-            թեյի, լիմոնադի, mocktail-ի, cocktail-ի
-            և dessert pairing-ի համար։
-          </p>
-        </div>
-
-        <div className="flavor-chip-grid">
-          {flavors.map((flavor) => (
-            <span key={flavor}>
-              {flavor}
-            </span>
-          ))}
-        </div>
-
-        <Link
-          to="/catalog"
-          className="collection-link"
-        >
-          Բացել ամբողջ կատալոգը
-          <ArrowRight size={18} />
-        </Link>
       </section>
 
       <section className="story premium-story">
@@ -199,7 +164,9 @@ export default function HomePage() {
               className="catalog-contact-card"
               href="tel:+37491024232"
             >
-              <span className="contact-icon">☎</span>
+              <span className="contact-icon">
+                ☎
+              </span>
 
               <div>
                 <small>Զանգահարել</small>
@@ -212,7 +179,9 @@ export default function HomePage() {
               className="catalog-contact-card"
               href="mailto:aurevis@mail.ru"
             >
-              <span className="contact-icon">✉</span>
+              <span className="contact-icon">
+                ✉
+              </span>
 
               <div>
                 <small>Էլեկտրոնային փոստ</small>
@@ -227,7 +196,9 @@ export default function HomePage() {
               target="_blank"
               rel="noreferrer"
             >
-              <span className="contact-icon">◎</span>
+              <span className="contact-icon">
+                ◎
+              </span>
 
               <div>
                 <small>Instagram</small>
