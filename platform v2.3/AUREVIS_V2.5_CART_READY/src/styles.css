@@ -1650,3 +1650,35 @@ body.catalog-modal-open {
     padding: 5px !important;
   }
 }
+/* Հեռախոսով ապրանքի ամբողջ նկարը ցուցադրել */
+
+@media (max-width: 700px) {
+  .catalog-product-dialog .catalog-modal-art {
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    height: 320px !important;
+    min-height: 320px !important;
+    padding: 24px !important;
+    overflow: hidden !important;
+  }
+
+  .catalog-product-dialog
+  .catalog-modal-art
+  .real-product-image {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    transform: scale(0.82) !important;
+  }
+
+  .catalog-product-dialog
+  .catalog-modal-art
+  .mini-bottle {
+    transform: scale(0.8) !important;
+  }
+}
