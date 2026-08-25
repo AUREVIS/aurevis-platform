@@ -8,13 +8,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const stats = [
-  ["37+", "Օշարակի համ"],
-  ["10+", "Պյուրեի համ"],
-  ["100+", "Recipe գաղափար"],
-  ["HoReCa", "Գործընկերային լուծումներ"],
-];
-
 export default function HomePage() {
   return (
     <>
@@ -29,80 +22,53 @@ export default function HomePage() {
         <div className="hero-gold-glow" />
 
         <div className="hero-copy">
-  <p className="eyebrow">
-    ՀԱՅԱՍՏԱՆՈՒՄ ԱՌԱՋԻՆ ՄԻԱՍՆԱԿԱՆ ՊՐՈՖԵՍԻՈՆԱԼ HORECA ՀԱՐԹԱԿԸ
-  </p>
+          <p className="eyebrow">
+            ՀԱՅԱՍՏԱՆՈՒՄ ԱՌԱՋԻՆ ՄԻԱՍՆԱԿԱՆ ՊՐՈՖԵՍԻՈՆԱԼ HORECA ՀԱՐԹԱԿԸ
+          </p>
 
-  <h1>
-    Համից՝ մինչև
-    <br />
-    յուրահատուկ ըմպելիք։
-  </h1>
+          <h1>
+            Համից՝ մինչև
+            <br />
+            յուրահատուկ ըմպելիք։
+          </h1>
 
-  <p>
-    Պրեմիում օշարակներ, մրգային պյուրեներ և ամբողջական
-    HoReCa լուծումներ՝ սրճարանների, ռեստորանների,
-    հյուրանոցների և հրուշակեղենի արտադրամասերի համար։
-  </p>
-
-  <div className="hero-buttons">
-    <Link className="button gold" to="/catalog">
-      Բացել կատալոգը
-      <ArrowRight size={18} />
-    </Link>
-
-    <a className="button glass" href="#contact">
-      Դառնալ HoReCa գործընկեր
-    </a>
-  </div>
-
-  <div className="hero-stats">
-    <article>
-      <b>37+</b>
-      <span>Օշարակի համ</span>
-    </article>
-
-    <article>
-      <b>10+</b>
-      <span>Մրգային պյուրե</span>
-    </article>
-
-    <article>
-      <b>Անվճար</b>
-      <span>Առաքում Հայաստանում</span>
-    </article>
-
-    <article>
-      <b>Bonus</b>
-      <span>Միասնական հաշվեկշիռ</span>
-    </article>
-  </div>
-</div>
+          <p>
+            Պրեմիում օշարակներ, մրգային պյուրեներ և ամբողջական
+            HoReCa լուծումներ՝ սրճարանների, ռեստորանների,
+            հյուրանոցների և հրուշակեղենի արտադրամասերի համար։
+          </p>
 
           <div className="hero-buttons">
-            <Link
-              className="button gold"
-              to="/catalog"
-            >
-              Դիտել կատալոգը
+            <Link className="button gold" to="/catalog">
+              Բացել կատալոգը
               <ArrowRight size={18} />
             </Link>
 
-            <Link
-              className="button glass"
-              to="/academy"
-            >
-              Բացել Academy-ն
-            </Link>
+            <a className="button glass" href="#contact">
+              Դառնալ HoReCa գործընկեր
+            </a>
           </div>
 
           <div className="hero-stats">
-            {stats.map(([value, label]) => (
-              <article key={label}>
-                <b>{value}</b>
-                <span>{label}</span>
-              </article>
-            ))}
+            <article>
+              <b>37+</b>
+              <span>Օշարակի համ</span>
+            </article>
+
+            <article>
+              <b>10+</b>
+              <span>Մրգային պյուրե</span>
+            </article>
+
+            <article>
+              <b>Անվճար</b>
+              <span>Առաքում Հայաստանում</span>
+            </article>
+
+            <article>
+              <b>Bonus</b>
+              <span>Միասնական հաշվեկշիռ</span>
+            </article>
           </div>
         </div>
       </section>
@@ -167,13 +133,17 @@ export default function HomePage() {
             </span>
           </div>
         </div>
-  <img
-  src="/assets/aurevis-partnership.jpg"
-  alt="AUREVIS ապրանքներ"
-/>
+
+        <img
+          src="/assets/aurevis-partnership.jpg"
+          alt="AUREVIS ապրանքներ"
+        />
       </section>
 
-      <section id="contact" className="home-contact-wrapper">
+      <section
+        id="contact"
+        className="home-contact-wrapper"
+      >
         <div className="catalog-contact-section">
           <div className="catalog-contact-glow" />
 
