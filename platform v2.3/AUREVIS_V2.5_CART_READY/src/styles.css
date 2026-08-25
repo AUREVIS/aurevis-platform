@@ -1840,3 +1840,48 @@ body.catalog-modal-open {
     font-size: 2rem !important;
   }
 }
+/* Բացված ապրանքի նկարի վերջնական ճիշտ չափը */
+
+.catalog-product-dialog
+.catalog-modal-art
+img.modal-product-image {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 78% !important;
+  max-height: 78% !important;
+  margin: auto !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+@media (max-width: 900px) {
+  .catalog-product-dialog
+  .catalog-modal-art
+  img.modal-product-image {
+    max-width: 72% !important;
+    max-height: 72% !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .catalog-product-dialog .catalog-modal-art {
+    height: 280px !important;
+    min-height: 280px !important;
+  }
+
+  .catalog-product-dialog
+  .catalog-modal-art
+  img.modal-product-image {
+    width: auto !important;
+    height: auto !important;
+    max-width: 68% !important;
+    max-height: 220px !important;
+    transform: none !important;
+  }
+}
