@@ -27,30 +27,6 @@ const categoryLabels = {
 
 const catalogImages = [
   {
-    names: ["club sandwich bread"],
-    image: "/assets/club-sandwich-bread.webp",
-  },
-  {
-    names: ["brioche bread"],
-    image: "/assets/brioche-bread.webp",
-  },
-  {
-    names: ["tiramisu", "տիրամիսու"],
-    image: "/assets/aurevis-tiramisu.webp",
-  },
-  {
-    names: ["butter croissant"],
-    image: "/assets/butter-croissant.webp",
-  },
-  {
-    names: ["chocolate croissant"],
-    image: "/assets/chocolate-croissant.webp",
-  },
-  {
-    names: ["almond croissant"],
-    image: "/assets/almond-croissant.webp",
-  },
-  {
     names: ["passion fruit", "passionfruit", "maracuya"],
     image: "/assets/Passion Fruit.png",
   },
@@ -149,7 +125,7 @@ function getCatalogImage(product) {
   return "";
 }
 
-function ProductVisual({ product, modal = false }) {
+function ProductVisual({ product }) {
   const image = getCatalogImage(product);
   const category = normalizeText(product.category);
 
@@ -164,9 +140,7 @@ function ProductVisual({ product, modal = false }) {
   if (image) {
     return (
       <img
-        className={`real-product-image ${
-          modal ? "modal-product-image" : ""
-        }`}
+        className="real-product-image"
         src={image}
         alt={product.name}
         loading="lazy"
@@ -490,10 +464,7 @@ export default function CatalogPage() {
                   selectedProduct.accent || "#c59a42",
               }}
             >
-              <ProductVisual
-                product={selectedProduct}
-                modal
-              />
+              <ProductVisual product={selectedProduct} />
             </div>
 
             <div className="catalog-modal-content">
