@@ -1601,3 +1601,52 @@ body.catalog-modal-open {
     padding: 10px;
   }
 }
+/* Բացման լոգոյի վերջնական փոքր չափը */
+
+.aurevis-intro {
+  display: grid !important;
+  place-items: center !important;
+}
+
+.aurevis-intro-glow,
+.aurevis-intro-ring,
+.aurevis-intro-content > p,
+.aurevis-intro-content > h1,
+.aurevis-intro-content > span,
+.aurevis-intro-loader {
+  display: none !important;
+}
+
+.aurevis-intro-content {
+  display: grid !important;
+  place-items: center !important;
+  width: auto !important;
+}
+
+.aurevis-intro-logo-wrap,
+.aurevis-intro-logo-only {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 90px !important;
+  height: 90px !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.aurevis-intro-logo {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 600px) {
+  .aurevis-intro-logo-wrap,
+  .aurevis-intro-logo-only {
+    width: 65px !important;
+    height: 65px !important;
+    padding: 5px !important;
+  }
+}
