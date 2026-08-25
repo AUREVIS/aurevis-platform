@@ -29,22 +29,55 @@ export default function HomePage() {
         <div className="hero-gold-glow" />
 
         <div className="hero-copy">
-          <p className="eyebrow">
-            AUREVIS · PREMIUM HORECA
-          </p>
+  <p className="eyebrow">
+    ՀԱՅԱՍՏԱՆՈՒՄ ԱՌԱՋԻՆ ՄԻԱՍՆԱԿԱՆ ՊՐՈՖԵՍԻՈՆԱԼ HORECA ՀԱՐԹԱԿԸ
+  </p>
 
-          <h1>
-            From flavor
-            <br />
-            to signature drinks.
-          </h1>
+  <h1>
+    Համից՝ մինչև
+    <br />
+    յուրահատուկ ըմպելիք։
+  </h1>
 
-          <p>
-            Պրեմիում օշարակներ, մրգային պյուրեներ և
-            ամբողջական HoReCa լուծումներ՝ սրճարանների,
-            ռեստորանների, հյուրանոցների և bakery
-            նախագծերի համար։
-          </p>
+  <p>
+    Պրեմիում օշարակներ, մրգային պյուրեներ և ամբողջական
+    HoReCa լուծումներ՝ սրճարանների, ռեստորանների,
+    հյուրանոցների և հրուշակեղենի արտադրամասերի համար։
+  </p>
+
+  <div className="hero-buttons">
+    <Link className="button gold" to="/catalog">
+      Բացել կատալոգը
+      <ArrowRight size={18} />
+    </Link>
+
+    <a className="button glass" href="#contact">
+      Դառնալ HoReCa գործընկեր
+    </a>
+  </div>
+
+  <div className="hero-stats">
+    <article>
+      <b>37+</b>
+      <span>Օշարակի համ</span>
+    </article>
+
+    <article>
+      <b>10+</b>
+      <span>Մրգային պյուրե</span>
+    </article>
+
+    <article>
+      <b>Անվճար</b>
+      <span>Առաքում Հայաստանում</span>
+    </article>
+
+    <article>
+      <b>Bonus</b>
+      <span>Միասնական հաշվեկշիռ</span>
+    </article>
+  </div>
+</div>
 
           <div className="hero-buttons">
             <Link
