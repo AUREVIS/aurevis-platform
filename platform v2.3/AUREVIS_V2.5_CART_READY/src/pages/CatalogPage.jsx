@@ -26,18 +26,6 @@ const categoryLabels = {
 };
 
 const catalogImages = [
-    {
-    names: ["butter croissant"],
-    image: "/assets/butter-croissant.webp",
-  },
-  {
-    names: ["chocolate croissant"],
-    image: "/assets/chocolate-croissant.webp",
-  },
-  {
-    names: ["almond croissant"],
-    image: "/assets/almond-croissant.webp",
-  },
   {
     names: ["passion fruit", "passionfruit", "maracuya"],
     image: "/assets/Passion Fruit.png",
