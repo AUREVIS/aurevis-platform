@@ -1070,3 +1070,122 @@ html,body,#root{max-width:100%;overflow-x:hidden}
     padding: 22px;
   }
 }
+/* AUREVIS մուգ կանաչ պրեմիում մենյու */
+
+.sticky-main-header {
+  background:
+    linear-gradient(
+      90deg,
+      #02271d 0%,
+      #064735 55%,
+      #073b2e 100%
+    ) !important;
+  border-bottom: 1px solid rgba(224, 180, 77, 0.45) !important;
+  box-shadow: 0 10px 35px rgba(2, 31, 23, 0.25) !important;
+}
+
+/* Լոգոյի գրությունները */
+
+.sticky-main-header .brand-copy strong {
+  color: #e5bb57 !important;
+}
+
+.sticky-main-header .brand-copy small {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.sticky-main-header .brand img {
+  background: #fffdf8 !important;
+  box-shadow:
+    0 0 0 1px rgba(229, 187, 87, 0.6),
+    0 8px 25px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Գլխավոր մենյուի հղումները */
+
+.sticky-main-header nav a {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.sticky-main-header nav a:hover {
+  color: #e5bb57 !important;
+}
+
+.sticky-main-header nav a.active {
+  color: #edc869 !important;
+}
+
+.sticky-main-header nav a.active::after {
+  background: #e5bb57 !important;
+}
+
+/* Աջ կողմի կոճակները */
+
+.sticky-main-header .header-actions .desktop-action,
+.sticky-main-header .header-actions > a:not(.always-visible-cart),
+.sticky-main-header .menu-toggle {
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+}
+
+.sticky-main-header .header-actions .desktop-action:hover,
+.sticky-main-header .header-actions > a:hover,
+.sticky-main-header .menu-toggle:hover {
+  border-color: rgba(229, 187, 87, 0.65) !important;
+  background: rgba(229, 187, 87, 0.14) !important;
+}
+
+/* Հաշվեկշիռ */
+
+.sticky-main-header .header-wallet-link {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(229, 187, 87, 0.3) !important;
+}
+
+.sticky-main-header .header-wallet-link small {
+  color: #e5bb57 !important;
+}
+
+.sticky-main-header .header-wallet-link b {
+  color: white !important;
+}
+
+/* Զամբյուղ */
+
+.sticky-main-header .always-visible-cart {
+  background: #e5bb57 !important;
+  border-color: #f0ce78 !important;
+  color: #03271e !important;
+}
+
+.sticky-main-header .always-visible-cart svg {
+  color: #03271e !important;
+}
+
+.sticky-main-header .cart-count {
+  background: white !important;
+  color: #063c2e !important;
+  border: 1px solid #e5bb57;
+}
+
+/* Հեռախոսի բացվող մենյու */
+
+@media (max-width: 900px) {
+  .sticky-main-header nav {
+    background:
+      linear-gradient(
+        145deg,
+        #02271d,
+        #064735
+      ) !important;
+  }
+
+  .sticky-main-header nav a {
+    color: white !important;
+  }
+
+  .sticky-main-header nav a.active {
+    color: #e5bb57 !important;
+  }
+}
