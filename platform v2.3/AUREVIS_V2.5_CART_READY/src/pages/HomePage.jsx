@@ -173,7 +173,7 @@ export default function HomePage() {
 />
       </section>
 
-      <section className="home-contact-wrapper">
+      <section id="contact" className="home-contact-wrapper">
         <div className="catalog-contact-section">
           <div className="catalog-contact-glow" />
 
