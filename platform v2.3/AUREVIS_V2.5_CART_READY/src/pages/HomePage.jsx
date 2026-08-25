@@ -134,8 +134,6 @@ export default function HomePage() {
             </span>
           </div>
         </div>
-
-        <img
   <img
   src="/assets/aurevis-partnership.jpg"
   alt="AUREVIS ապրանքներ"
