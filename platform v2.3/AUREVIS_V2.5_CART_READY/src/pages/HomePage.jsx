@@ -136,8 +136,9 @@ export default function HomePage() {
         </div>
 
         <img
+  <img
   src="/assets/aurevis-partnership.jpg"
-  alt="AUREVIS ապրանքներ և HoReCa համագործակցություն"
+  alt="AUREVIS ապրանքներ"
 />
       </section>
 
