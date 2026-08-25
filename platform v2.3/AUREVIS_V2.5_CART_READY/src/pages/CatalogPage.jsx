@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import {
+  Minus,
+  Plus,
+  Search,
+  ShoppingBag,
+  X,
+} from "lucide-react";
 import { getCatalogProducts } from "../lib/catalog";
 import { useCart } from "../context/CartContext";
 
@@ -187,6 +193,8 @@ export default function CatalogPage() {
   const [category, setCategory] = useState("all");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
   async function loadCatalog() {
     setLoading(true);
@@ -205,6 +213,25 @@ export default function CatalogPage() {
   useEffect(() => {
     loadCatalog();
   }, []);
+
+  useEffect(() => {
+    if (!selectedProduct) return undefined;
+
+    document.body.classList.add("catalog-modal-open");
+
+    const closeWithEscape = (event) => {
+      if (event.key === "Escape") {
+        setSelectedProduct(null);
+      }
+    };
+
+    window.addEventListener("keydown", closeWithEscape);
+
+    return () => {
+      document.body.classList.remove("catalog-modal-open");
+      window.removeEventListener("keydown", closeWithEscape);
+    };
+  }, [selectedProduct]);
 
   const categories = useMemo(() => {
     const unique = [
@@ -226,6 +253,10 @@ export default function CatalogPage() {
         `${product.name || ""} ${product.nameHy || ""}`
       );
 
+      if (normalizeText(product.name) === "aurevis") {
+        return false;
+      }
+
       const matchesQuery =
         !searchText ||
         productName.includes(searchText);
@@ -241,6 +272,24 @@ export default function CatalogPage() {
   function handleAddToCart(product) {
     addItem(product);
     setAddedId(product.id);
+
+    window.setTimeout(() => {
+      setAddedId(null);
+    }, 900);
+  }
+
+  function openProduct(product) {
+    setSelectedProduct(product);
+    setQuantity(1);
+  }
+
+  function addSelectedProduct() {
+    for (let index = 0; index < quantity; index += 1) {
+      addItem(selectedProduct);
+    }
+
+    setAddedId(selectedProduct.id);
+    setSelectedProduct(null);
 
     window.setTimeout(() => {
       setAddedId(null);
@@ -304,8 +353,17 @@ export default function CatalogPage() {
       <div className="product-grid">
         {visible.map((product) => (
           <article
-            className="product-card"
+            className="product-card catalog-clickable-card"
             key={product.id}
+            role="button"
+            tabIndex={0}
+            onClick={() => openProduct(product)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openProduct(product);
+              }
+            }}
           >
             <div
               className="product-art"
@@ -355,19 +413,159 @@ export default function CatalogPage() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    handleAddToCart(product)
-                  }
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleAddToCart(product);
+                  }}
                 >
                   {addedId === product.id
                     ? "Ավելացված է ✓"
                     : "+ Ավելացնել"}
                 </button>
               </div>
+
+              <span className="catalog-details-hint">
+                Սեղմել՝ մանրամասները տեսնելու համար
+              </span>
             </div>
           </article>
         ))}
       </div>
+
+      {selectedProduct && (
+        <div
+          className="catalog-product-modal"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setSelectedProduct(null);
+            }
+          }}
+        >
+          <article
+            className="catalog-product-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="catalog-product-title"
+          >
+            <button
+              type="button"
+              className="catalog-modal-close"
+              aria-label="Փակել"
+              onClick={() => setSelectedProduct(null)}
+            >
+              <X size={22} />
+            </button>
+
+            <div
+              className="catalog-modal-art"
+              style={{
+                "--accent":
+                  selectedProduct.accent || "#c59a42",
+              }}
+            >
+              <ProductVisual product={selectedProduct} />
+            </div>
+
+            <div className="catalog-modal-content">
+              <p className="catalog-modal-category">
+                {selectedProduct.categoryName ||
+                  categoryLabels[selectedProduct.category] ||
+                  selectedProduct.category ||
+                  "AUREVIS"}
+              </p>
+
+              <h2 id="catalog-product-title">
+                {selectedProduct.name}
+              </h2>
+
+              {selectedProduct.nameHy &&
+                selectedProduct.nameHy !== selectedProduct.name && (
+                  <p className="catalog-modal-name-hy">
+                    {selectedProduct.nameHy}
+                  </p>
+                )}
+
+              <p className="catalog-modal-description">
+                {selectedProduct.description ||
+                  "Պրոֆեսիոնալ AUREVIS արտադրանք՝ սրճարանների, ռեստորանների և HoReCa նախագծերի համար։"}
+              </p>
+
+              <div className="catalog-modal-information">
+                <span>
+                  Ծավալ
+                  <b>{selectedProduct.volume || "1 լիտր"}</b>
+                </span>
+
+                <span>
+                  Գին
+                  <b>{money(selectedProduct.price)}</b>
+                </span>
+              </div>
+
+              <div className="product-meta catalog-modal-bonuses">
+                {selectedProduct.bonus > 0 && (
+                  <small>
+                    +{selectedProduct.bonus} Bonus
+                  </small>
+                )}
+
+                {selectedProduct.iceGiftKg > 0 && (
+                  <small>
+                    +{selectedProduct.iceGiftKg} կգ սառույց
+                  </small>
+                )}
+              </div>
+
+              <div className="catalog-modal-order-row">
+                <div
+                  className="catalog-quantity-control"
+                  aria-label="Քանակ"
+                >
+                  <button
+                    type="button"
+                    aria-label="Պակասեցնել"
+                    onClick={() =>
+                      setQuantity((current) =>
+                        Math.max(1, current - 1)
+                      )
+                    }
+                  >
+                    <Minus size={18} />
+                  </button>
+
+                  <b>{quantity}</b>
+
+                  <button
+                    type="button"
+                    aria-label="Ավելացնել"
+                    onClick={() =>
+                      setQuantity((current) => current + 1)
+                    }
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  className="catalog-modal-add-button"
+                  onClick={addSelectedProduct}
+                >
+                  <ShoppingBag size={19} />
+                  Ավելացնել զամբյուղ
+                  <b>
+                    {money(
+                      Number(selectedProduct.price || 0) *
+                        quantity
+                    )}
+                  </b>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      )}
 
       {!loading && !visible.length && (
         <div className="empty-state">
