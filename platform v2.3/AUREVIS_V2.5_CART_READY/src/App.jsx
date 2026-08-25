@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
+import IntroScreen from "./components/IntroScreen";
 import HomePage from "./pages/HomePage";
 import CatalogPage from "./pages/CatalogPage";
 import AcademyPage from "./pages/AcademyPage";
@@ -19,8 +21,21 @@ function AdminRoute({ children }) {
 }
 
 export default function App() {
+  const [showIntro, setShowIntro] = useState(() => {
+    return sessionStorage.getItem("aurevis_intro_seen") !== "true";
+  });
+
+  function finishIntro() {
+    sessionStorage.setItem("aurevis_intro_seen", "true");
+    setShowIntro(false);
+  }
+
   return (
     <div className="app">
+      {showIntro && (
+        <IntroScreen onFinish={finishIntro} />
+      )}
+
       <Header />
       <main>
         <Routes>
