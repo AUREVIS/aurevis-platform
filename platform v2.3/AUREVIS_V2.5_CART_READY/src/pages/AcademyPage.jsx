@@ -10,7 +10,7 @@ export default function AcademyPage() {
   const profit = sale - totalCost;
 
   return (
-    <section className="page">
+    <section className="page academy-page">
       <div className="page-heading">
         <p className="eyebrow dark">AUREVIS ACADEMY</p>
         <h1>Բաղադրատոմսից մինչև շահույթ</h1>
