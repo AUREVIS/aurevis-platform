@@ -147,6 +147,21 @@ html,body,#root{max-width:100%;overflow-x:hidden}
 .admin-orders article{background:#ffffff0b}.admin-orders article span{color:#9fb4ab}.admin-orders article em{background:#ffffff12;color:#e8c46d}.admin-empty{color:#9fb4ab}
 @media(max-width:900px){.auth-shell{grid-template-columns:1fr}.account-summary{grid-template-columns:1fr}.admin-status-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.auth-card{padding:25px}.account-topbar,.admin-heading{align-items:flex-start;flex-direction:column}.account-topbar{padding:20px}.account-section{padding:18px}.order-list article{grid-template-columns:1fr auto}.order-list article em{grid-column:1/-1;width:max-content}.admin-status-grid{grid-template-columns:1fr}.admin-actions{flex-wrap:wrap}}
+
+/* V2.4 — Orders and sales dashboard */
+.sales-status-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.sales-status-grid article{min-width:0}
+.sales-status-grid article b{font-size:clamp(1.15rem,2vw,1.55rem);overflow-wrap:anywhere}
+.admin-orders article small{color:#79998c;font-size:.72rem}
+.admin-section-title h2{display:flex;align-items:center;gap:9px}
+.sales-history-table{min-width:980px}
+.sales-history-table .order-status{min-width:100px}
+.account-section .section-title h2{display:flex;align-items:center;gap:9px}
+.order-history-section{background:#faf7f0}
+.cashback-note{color:#9a762e!important;font-weight:900}
+
+@media(max-width:1100px){.sales-status-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.sales-status-grid{grid-template-columns:1fr}.admin-orders article{grid-template-columns:1fr}.admin-orders .order-status-select{width:100%}}
 /* AUREVIS catalog — smaller product images */
 
 .catalog-page .product-art {
