@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, RefreshCw, ShieldCheck, Users, WalletCards, X } from "lucide-react";
+import {
+  CalendarDays, Check, CircleDollarSign, History, PackageCheck,
+  RefreshCw, ShieldCheck, ShoppingBag, TrendingUp, Users, X,
+} from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 
@@ -12,23 +15,37 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [walletInputs, setWalletInputs] = useState({});
+  const [sales, setSales] = useState({
+    today_total: 0,
+    month_total: 0,
+    all_time_total: 0,
+    completed_orders: 0,
+    sold_items: 0,
+    cashback_total: 0,
+  });
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
-    const [profilesResult, ordersResult] = await Promise.all([
+    const [profilesResult, ordersResult, salesResult] = await Promise.all([
       supabase.from("profiles").select("id, email, full_name, phone, account_type, company_name, role, horeca_status, loyalty_tier, created_at")
         .eq("is_archived", false)
         .order("created_at", { ascending: false }),
-      supabase.from("orders").select("id, order_number, status, total_amount, created_at, profiles(full_name, email)")
-        .order("created_at", { ascending: false }).limit(50),
+      supabase.from("orders").select(`
+        id, order_number, status, total_amount, cashback_earned,
+        created_at, updated_at, completed_at,
+        profiles(full_name, email, company_name),
+        order_items(quantity, product_name)
+      `).order("created_at", { ascending: false }).limit(200),
+      supabase.rpc("admin_sales_summary"),
     ]);
 
-    if (profilesResult.error || ordersResult.error) {
-      setError(profilesResult.error?.message || ordersResult.error?.message || "Տվյալները չբեռնվեցին");
+    if (profilesResult.error || ordersResult.error || salesResult.error) {
+      setError(profilesResult.error?.message || ordersResult.error?.message || salesResult.error?.message || "Տվյալները չբեռնվեցին");
     } else {
       setProfiles(profilesResult.data || []);
       setOrders(ordersResult.data || []);
+      setSales((current) => ({ ...current, ...(salesResult.data || {}) }));
     }
     setLoading(false);
   }, []);
@@ -39,8 +56,17 @@ export default function AdminPage() {
     customers: profiles.length,
     pending: profiles.filter((item) => item.account_type === "horeca" && item.horeca_status === "pending").length,
     approved: profiles.filter((item) => item.account_type === "horeca" && item.horeca_status === "approved").length,
-    orders: orders.length,
+    activeOrders: orders.filter((item) => !["completed", "cancelled"].includes(item.status)).length,
   }), [profiles, orders]);
+
+  const activeOrders = useMemo(
+    () => orders.filter((order) => !["completed", "cancelled"].includes(order.status)),
+    [orders],
+  );
+  const salesHistory = useMemo(
+    () => orders.filter((order) => ["completed", "cancelled"].includes(order.status)),
+    [orders],
+  );
 
   async function setHoReCa(userId, status) {
     const { error: rpcError } = await supabase.rpc("admin_set_horeca_status", {
@@ -68,14 +94,21 @@ export default function AdminPage() {
 
   async function updateOrderStatus(orderId, nextStatus) {
     setError("");
-    const { error: updateError } = await supabase
-      .from("orders")
-      .update({ status: nextStatus, updated_at: new Date().toISOString() })
-      .eq("id", orderId);
+    const { error: updateError } = await supabase.rpc("admin_update_order_status", {
+      target_order_id: orderId,
+      next_status: nextStatus,
+    });
     if (updateError) setError(updateError.message);
-    else setOrders((current) => current.map((order) =>
-      order.id === orderId ? { ...order, status: nextStatus } : order));
+    else load();
   }
+
+  const orderItemsCount = (order) => (order.order_items || [])
+    .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+
+  const customerName = (order) => order.profiles?.company_name
+    || order.profiles?.full_name
+    || order.profiles?.email
+    || "Հաճախորդ";
 
   return (
     <section className="page admin-page">
@@ -91,14 +124,18 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div className="status-grid admin-status-grid">
-        <article><Users /><span>Հաշիվներ</span><b>{stats.customers}</b></article>
-        <article><ShieldCheck /><span>Սպասող HoReCa</span><b>{stats.pending}</b></article>
-        <article><Check /><span>Հաստատված HoReCa</span><b>{stats.approved}</b></article>
-        <article><WalletCards /><span>Վերջին պատվերներ</span><b>{stats.orders}</b></article>
+      <div className="status-grid admin-status-grid sales-status-grid">
+        <article><CalendarDays /><span>Այսօրվա վաճառք</span><b>{money(sales.today_total)}</b></article>
+        <article><TrendingUp /><span>Այս ամսվա վաճառք</span><b>{money(sales.month_total)}</b></article>
+        <article><CircleDollarSign /><span>Ընդհանուր վաճառք</span><b>{money(sales.all_time_total)}</b></article>
+        <article><ShoppingBag /><span>Ակտիվ պատվերներ</span><b>{stats.activeOrders}</b></article>
+        <article><PackageCheck /><span>Վաճառված ապրանքներ</span><b>{sales.sold_items}</b></article>
+        <article><Check /><span>Ավարտված պատվերներ</span><b>{sales.completed_orders}</b></article>
+        <article><Users /><span>Հաճախորդներ</span><b>{stats.customers}</b></article>
+        <article><ShieldCheck /><span>Տրված cashback</span><b>{money(sales.cashback_total)}</b></article>
       </div>
 
-      {error && <p className="admin-error">V2.3 database setup-ը ստուգիր․ {error}</p>}
+      {error && <p className="admin-error">V2.4 database setup-ը ստուգիր․ {error}</p>}
 
       <div className="admin-panel">
         <div className="section-title admin-section-title">
@@ -139,13 +176,18 @@ export default function AdminPage() {
 
       <div className="admin-panel">
         <div className="section-title admin-section-title">
-          <div><p className="eyebrow">ORDERS</p><h2>Վերջին պատվերները</h2></div>
+          <div><p className="eyebrow">ACTIVE ORDERS</p><h2>Ակտիվ պատվերներ</h2></div>
+          <span>{activeOrders.length}</span>
         </div>
-        {orders.length ? (
+        {activeOrders.length ? (
           <div className="order-list admin-orders">
-            {orders.map((order) => (
+            {activeOrders.map((order) => (
               <article key={order.id}>
-                <div><b>#{order.order_number}</b><span>{order.profiles?.full_name || order.profiles?.email}</span></div>
+                <div>
+                  <b>#{order.order_number}</b>
+                  <span>{customerName(order)} · {orderItemsCount(order)} ապրանք</span>
+                  <small>{new Date(order.created_at).toLocaleString("hy-AM")}</small>
+                </div>
                 <strong>{money(order.total_amount)}</strong>
                 <select
                   className={`order-status-select ${order.status}`}
@@ -164,6 +206,35 @@ export default function AdminPage() {
             ))}
           </div>
         ) : <p className="admin-empty">Դեռ պատվեր չկա։</p>}
+      </div>
+
+      <div className="admin-panel">
+        <div className="section-title admin-section-title">
+          <div><p className="eyebrow">SALES HISTORY</p><h2><History size={25} /> Վաճառքների պատմություն</h2></div>
+          <span>{salesHistory.length}</span>
+        </div>
+        {salesHistory.length ? (
+          <div className="admin-table-wrap">
+            <table className="admin-table sales-history-table">
+              <thead>
+                <tr><th>Պատվեր</th><th>Հաճախորդ</th><th>Ապրանքներ</th><th>Գումար</th><th>Cashback</th><th>Ամսաթիվ</th><th>Կարգավիճակ</th></tr>
+              </thead>
+              <tbody>
+                {salesHistory.map((order) => (
+                  <tr key={order.id}>
+                    <td><b>#{order.order_number}</b></td>
+                    <td>{customerName(order)}</td>
+                    <td>{orderItemsCount(order)}</td>
+                    <td><b>{money(order.total_amount)}</b></td>
+                    <td>{order.status === "completed" ? money(order.cashback_earned) : "—"}</td>
+                    <td>{new Date(order.completed_at || order.updated_at).toLocaleString("hy-AM")}</td>
+                    <td><span className={`order-status ${order.status}`}>{order.status === "completed" ? "Ավարտված" : "Չեղարկված"}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : <p className="admin-empty">Ավարտված վաճառք դեռ չկա։</p>}
       </div>
     </section>
   );
