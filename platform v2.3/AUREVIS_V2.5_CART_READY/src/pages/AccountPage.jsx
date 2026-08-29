@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BadgeCheck, Building2, LogOut, WalletCards } from "lucide-react";
+import { BadgeCheck, Building2, Clock3, History, LogOut, WalletCards } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
@@ -139,8 +139,8 @@ export default function AccountPage() {
 
     Promise.all([
       supabase.from("wallets").select("balance").eq("user_id", user.id).maybeSingle(),
-      supabase.from("orders").select("id, order_number, status, total_amount, created_at")
-        .eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
+      supabase.from("orders").select("id, order_number, status, total_amount, cashback_earned, created_at, updated_at")
+        .eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
     ]).then(([walletResult, ordersResult]) => {
       if (!active) return;
       if (walletResult.error || ordersResult.error) {
@@ -155,6 +155,29 @@ export default function AccountPage() {
   }, [user]);
 
   if (loading) return <div className="route-loader">Հաշիվը բեռնվում է…</div>;
+
+  const activeOrders = orders.filter((order) => !["completed", "cancelled"].includes(order.status));
+  const orderHistory = orders.filter((order) => ["completed", "cancelled"].includes(order.status));
+
+  const renderOrders = (list) => (
+    <div className="order-list">
+      {list.map((order) => (
+        <article key={order.id}>
+          <div>
+            <b>#{order.order_number}</b>
+            <span>{new Date(order.created_at).toLocaleDateString("hy-AM")}</span>
+            {order.status === "completed" && Number(order.cashback_earned) > 0 && (
+              <small className="cashback-note">+{money(order.cashback_earned)} cashback</small>
+            )}
+          </div>
+          <strong>{money(order.total_amount)}</strong>
+          <em className={`order-status ${order.status}`}>
+            {orderStatusLabels[order.status] || order.status}
+          </em>
+        </article>
+      ))}
+    </div>
+  );
 
   return (
     <section className="page account-page">
@@ -202,25 +225,26 @@ export default function AccountPage() {
 
           <div className="account-section">
             <div className="section-title">
-              <div><p className="eyebrow dark">ORDER HISTORY</p><h2>Իմ պատվերները</h2></div>
-              <span>{orders.length} պատվեր</span>
+              <div><p className="eyebrow dark">ACTIVE ORDERS</p><h2><Clock3 size={25} /> Ակտիվ պատվերներ</h2></div>
+              <span>{activeOrders.length} պատվեր</span>
             </div>
-            {orders.length ? (
-              <div className="order-list">
-                {orders.map((order) => (
-                  <article key={order.id}>
-                    <div><b>#{order.order_number}</b><span>{new Date(order.created_at).toLocaleDateString("hy-AM")}</span></div>
-                    <strong>{money(order.total_amount)}</strong>
-                    <em className={`order-status ${order.status}`}>
-                      {orderStatusLabels[order.status] || order.status}
-                    </em>
-                  </article>
-                ))}
-              </div>
-            ) : (
+            {activeOrders.length ? renderOrders(activeOrders) : (
               <div className="empty-state compact">
-                <h3>Դեռ պատվեր չունես</h3>
-                <p>Քո առաջին պատվերը այստեղ կհայտնվի։</p>
+                <h3>Ակտիվ պատվեր չկա</h3>
+                <p>Նոր պատվերը և դրա ընթացքը այստեղ կերևան։</p>
+              </div>
+            )}
+          </div>
+
+          <div className="account-section order-history-section">
+            <div className="section-title">
+              <div><p className="eyebrow dark">ORDER HISTORY</p><h2><History size={25} /> Պատվերների պատմություն</h2></div>
+              <span>{orderHistory.length} պատվեր</span>
+            </div>
+            {orderHistory.length ? renderOrders(orderHistory) : (
+              <div className="empty-state compact">
+                <h3>Պատմությունը դեռ դատարկ է</h3>
+                <p>Ավարտված և չեղարկված պատվերներն այստեղ կպահպանվեն։</p>
               </div>
             )}
           </div>
