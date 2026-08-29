@@ -22,21 +22,23 @@ export default function CartPage() {
     if (!user) return setError("Պատվիրելու համար մուտք գործիր կամ գրանցվիր։");
     if (!items.length) return;
     setBusy(true); setError(""); setSuccess("");
-    const orderNumber = `AV-${Date.now().toString(36).toUpperCase()}`;
-    const summary = items.map((item) => `${item.name} × ${item.quantity}`).join(", ");
-    const { error: orderError } = await supabase.from("orders").insert({
-      order_number: orderNumber,
-      user_id: user.id,
-      status: "new",
-      subtotal: total,
-      bonus_spent: 0,
-      total_amount: total,
-      delivery_address: form.address.trim(),
-      phone: form.phone.trim(),
-      notes: [summary, form.notes.trim()].filter(Boolean).join(" | "),
+    const { data, error: orderError } = await supabase.rpc("create_aurevis_order", {
+      order_phone: form.phone.trim(),
+      order_address: form.address.trim(),
+      order_notes: form.notes.trim(),
+      cart_items: items.map((item) => ({
+        id: item.id,
+        sku: item.sku || null,
+        name: item.name,
+        quantity: item.quantity,
+      })),
     });
     if (orderError) setError(`Պատվերը չպահպանվեց․ ${orderError.message}`);
-    else { clearCart(); setSuccess(`Պատվերն ընդունված է։ Համար՝ ${orderNumber}`); }
+    else {
+      const orderNumber = data?.[0]?.order_number || "AUREVIS";
+      clearCart();
+      setSuccess(`Պատվերն ընդունված է։ Համար՝ ${orderNumber}`);
+    }
     setBusy(false);
   }
 
