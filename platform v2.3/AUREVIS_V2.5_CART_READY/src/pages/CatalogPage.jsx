@@ -25,6 +25,37 @@ const categoryLabels = {
   other: "Այլ ապրանքներ",
 };
 
+const syrupImages = [
+  { names: ["strawberry"], image: "/assets/syrups/strawberry.png" },
+  { names: ["raspberry"], image: "/assets/syrups/raspberry.png" },
+  { names: ["passion fruit", "passionfruit", "maracuya"], image: "/assets/syrups/passion-fruit.png" },
+  { names: ["chocolate"], image: "/assets/syrups/chocolate.png" },
+  { names: ["mango"], image: "/assets/syrups/mango.png" },
+  { names: ["mojito"], image: "/assets/syrups/mojito.png" },
+  { names: ["lemongrass", "lemon grass"], image: "/assets/syrups/lemongrass.png" },
+  { names: ["lemon"], image: "/assets/syrups/lemon.png" },
+  { names: ["peach"], image: "/assets/syrups/peach.png" },
+  { names: ["blueberry"], image: "/assets/syrups/blueberry.png" },
+  { names: ["black currant", "blackcurrant"], image: "/assets/syrups/black-currant.png" },
+  { names: ["cherry"], image: "/assets/syrups/cherry.png" },
+  { names: ["coconut"], image: "/assets/syrups/coconut.png" },
+  { names: ["pomegranate"], image: "/assets/syrups/pomegranate.png" },
+  { names: ["pineapple"], image: "/assets/syrups/pineapple.png" },
+  { names: ["mandarine", "mandarin"], image: "/assets/syrups/mandarine.png" },
+  { names: ["blue curacao", "bluecuracao"], image: "/assets/syrups/blue-curacao.png" },
+  { names: ["grapefruit"], image: "/assets/syrups/grapefruit.png" },
+  { names: ["orange"], image: "/assets/syrups/orange.png" },
+  { names: ["green apple", "apple"], image: "/assets/syrups/apple.png" },
+  { names: ["watermelon"], image: "/assets/syrups/watermelon.png" },
+  { names: ["melon"], image: "/assets/syrups/melon.png" },
+  { names: ["pistachio", "pistaco"], image: "/assets/syrups/pistachio.png" },
+  { names: ["cinnamon", "cinamonn"], image: "/assets/syrups/cinnamon.png" },
+  { names: ["grenadine"], image: "/assets/syrups/grenadine.png" },
+  { names: ["ginger"], image: "/assets/syrups/ginger.png" },
+  { names: ["rose"], image: "/assets/syrups/rose.png" },
+  { names: ["apricot"], image: "/assets/syrups/apricot.png" },
+];
+
 const catalogImages = [
   {
     names: ["club sandwich bread"],
@@ -117,10 +148,28 @@ const normalizeText = (value = "") =>
     .replace(/[_-]+/g, " ")
     .replace(/\s+/g, " ");
 
+const containsPhrase = (text, phrase) =>
+  ` ${text} `.includes(` ${normalizeText(phrase)} `);
+
 function getCatalogImage(product) {
   const productText = normalizeText(
     `${product.name || ""} ${product.nameHy || ""}`
   );
+
+  const category = normalizeText(product.category);
+  const isSyrup = category === "syrup" || category === "syrups";
+
+  if (isSyrup) {
+    const matchedSyrup = syrupImages.find((item) =>
+      item.names.some((name) => containsPhrase(productText, name))
+    );
+
+    if (matchedSyrup) {
+      return matchedSyrup.image;
+    }
+
+    return product.image || product.image_url || product.imageUrl || "";
+  }
 
   const matchedImage = catalogImages.find((item) =>
     item.names.some((name) => productText.includes(name))
@@ -130,7 +179,6 @@ function getCatalogImage(product) {
     return matchedImage.image;
   }
 
-  const category = normalizeText(product.category);
   const isBottle =
     category === "puree" ||
     category === "purees" ||
