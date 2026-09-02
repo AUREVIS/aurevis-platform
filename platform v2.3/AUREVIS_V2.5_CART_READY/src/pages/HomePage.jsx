@@ -79,36 +79,26 @@ export default function HomePage() {
 
         <div className="hero-mix-scene" aria-hidden="true">
           <div className="mix-bottle-wrap">
-            <div className="mix-bottle">
-              <span className="mix-bottle-cap" />
-              <span className="mix-bottle-neck" />
-              <span className="mix-bottle-liquid" />
-              <span className="mix-bottle-label">
-                <b>AUREVIS</b>
-                <small>PASSION FRUIT</small>
-              </span>
-            </div>
+            <img
+              className="mix-real-bottle"
+              src="/assets/hero-real-bottle-v2.webp"
+              alt=""
+            />
             <span className="mix-stream" />
           </div>
 
-          <div className="mix-glass">
-            <span className="mix-glass-rim" />
-            <div className="mix-liquid">
-              <span className="mix-wave wave-one" />
-              <span className="mix-wave wave-two" />
-            </div>
-            <i className="mix-ice ice-one" />
-            <i className="mix-ice ice-two" />
-            <i className="mix-ice ice-three" />
+          <div className="mix-real-glass-wrap">
+            <img
+              className="mix-real-glass"
+              src="/assets/hero-real-glass-v2.webp"
+              alt=""
+            />
             <i className="mix-bubble bubble-one" />
             <i className="mix-bubble bubble-two" />
             <i className="mix-bubble bubble-three" />
             <i className="mix-bubble bubble-four" />
           </div>
 
-          <span className="mix-fruit-slice" />
-          <span className="mix-leaf leaf-one" />
-          <span className="mix-leaf leaf-two" />
           <span className="mix-scene-label">AUREVIS · SIGNATURE MIX</span>
         </div>
 
