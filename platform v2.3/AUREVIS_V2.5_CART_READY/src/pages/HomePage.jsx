@@ -5,8 +5,11 @@ import {
   Calculator,
   ChefHat,
   Gift,
+  Handshake,
+  Leaf,
   Snowflake,
   Percent,
+  ShieldCheck,
   ShoppingBag,
   Sparkles,
   Truck,
@@ -274,6 +277,55 @@ export default function HomePage() {
           <b>{t("freeDelivery")}</b>
           <span>{t("allArmenia")}</span>
         </article>
+      </section>
+
+      <section className="home-trust-section">
+        <div className="home-trust-intro">
+          <p className="eyebrow dark">AUREVIS QUALITY PROMISE</p>
+          <h2>{t("whyChooseTitle")}</h2>
+          <p>{t("whyChooseLead")}</p>
+          <Link className="home-trust-link" to="/catalog">
+            {t("openCatalog")} <ArrowRight size={17} />
+          </Link>
+        </div>
+
+        <div className="home-trust-grid">
+          <article>
+            <span><Leaf /></span>
+            <div>
+              <small>01</small>
+              <h3>{t("armenianFruitTitle")}</h3>
+              <p>{t("armenianFruitText")}</p>
+            </div>
+          </article>
+
+          <article>
+            <span><ShieldCheck /></span>
+            <div>
+              <small>02</small>
+              <h3>{t("consistentQualityTitle")}</h3>
+              <p>{t("consistentQualityText")}</p>
+            </div>
+          </article>
+
+          <article>
+            <span><Truck /></span>
+            <div>
+              <small>03</small>
+              <h3>{t("deliveryTrustTitle")}</h3>
+              <p>{t("deliveryTrustText")}</p>
+            </div>
+          </article>
+
+          <article>
+            <span><Handshake /></span>
+            <div>
+              <small>04</small>
+              <h3>{t("horecaSupportTitle")}</h3>
+              <p>{t("horecaSupportText")}</p>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section className="story premium-story">
