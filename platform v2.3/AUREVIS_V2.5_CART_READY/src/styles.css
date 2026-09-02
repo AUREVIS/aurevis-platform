@@ -1831,8 +1831,8 @@ body.catalog-modal-open {
   z-index: 2;
   top: 50%;
   right: clamp(3%, 8vw, 10%);
-  width: clamp(360px, 34vw, 610px);
-  height: clamp(450px, 68vh, 720px);
+  width: clamp(340px, 30vw, 540px);
+  height: clamp(430px, 62vh, 650px);
   transform: translateY(-48%);
   pointer-events: none;
   filter: drop-shadow(0 28px 40px rgba(0, 0, 0, 0.34));
@@ -2098,11 +2098,6 @@ body.catalog-modal-open {
   .mix-bottle-wrap { display: none; }
   .mix-scene-label { display: none; }
   .premium-hero .hero-copy { text-shadow: 0 2px 14px rgba(0,0,0,.7); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-mix-scene *, .hero-mix-scene::before { animation: none !important; }
-  .mix-stream { display: none; }
 }
 
 .home-shop-sections {
