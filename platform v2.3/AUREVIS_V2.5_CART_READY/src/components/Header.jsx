@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Heart,
+  Languages,
   Menu,
   ShoppingBag,
   UserRound,
@@ -10,6 +11,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useLanguage } from "../context/LanguageContext";
 
 const money = (value) =>
   new Intl.NumberFormat("hy-AM").format(
@@ -19,6 +21,7 @@ const money = (value) =>
 export default function Header() {
   const { isAdmin, user, profile } = useAuth();
   const { count } = useCart();
+  const { language, setLanguage, t } = useLanguage();
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -66,21 +69,28 @@ export default function Header() {
         aria-label="Գլխավոր մենյու"
       >
         <NavLink to="/" onClick={closeMenu}>
-          Գլխավոր
+          {t("home")}
         </NavLink>
 
         <NavLink
           to="/catalog"
           onClick={closeMenu}
         >
-          Կատալոգ
+          {t("catalog")}
         </NavLink>
 
         <NavLink
           to="/academy"
           onClick={closeMenu}
         >
-          AUREVIS Academy
+          {t("academy")}
+        </NavLink>
+
+        <NavLink
+          to="/horeca-benefits"
+          onClick={closeMenu}
+        >
+          {t("benefits")}
         </NavLink>
 
         {isAdmin && (
@@ -98,12 +108,25 @@ export default function Header() {
           onClick={closeMenu}
         >
           {user
-            ? "Իմ հաշիվը"
-            : "Մուտք / Գրանցում"}
+            ? t("account")
+            : t("login")}
         </NavLink>
       </nav>
 
       <div className="header-actions">
+        <label className="language-picker" aria-label="Language">
+          <Languages size={17} />
+          <select
+            value={language}
+            onChange={(event) => setLanguage(event.target.value)}
+          >
+            <option value="hy">ՀԱՅ</option>
+            <option value="ru">РУС</option>
+            <option value="en">ENG</option>
+            <option value="ka">ქარ</option>
+          </select>
+        </label>
+
         <button
           type="button"
           className="desktop-action"
@@ -114,13 +137,13 @@ export default function Header() {
 
         <NavLink
           className="header-wallet-link"
-          to="/bonus"
+          to="/account"
           aria-label="Հաշվեկշիռ"
         >
           <WalletCards size={19} />
 
           <span>
-            <small>Հաշվեկշիռ</small>
+            <small>{t("balance")}</small>
             <b>{money(walletBalance)}</b>
           </span>
         </NavLink>
