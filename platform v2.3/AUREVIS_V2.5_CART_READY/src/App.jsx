@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
+import { MessageCircle, Phone } from "lucide-react";
 import Header from "./components/Header";
 import IntroScreen from "./components/IntroScreen";
 import HomePage from "./pages/HomePage";
@@ -11,6 +12,7 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import CartPage from "./pages/CartPage";
 import BenefitsPage from "./pages/BenefitsPage";
 import { useAuth } from "./context/AuthContext";
+import { useLanguage } from "./context/LanguageContext";
 
 function AdminRoute({ children }) {
   const { configured, loading, user, isAdmin } = useAuth();
@@ -22,6 +24,7 @@ function AdminRoute({ children }) {
 }
 
 export default function App() {
+  const { t } = useLanguage();
   const [showIntro, setShowIntro] = useState(() => {
     return sessionStorage.getItem("aurevis_intro_seen") !== "true";
   });
@@ -51,6 +54,28 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+
+      <div className="floating-contact" aria-label={t("quickContact")}>
+        <a
+          className="floating-contact-link whatsapp"
+          href={`https://wa.me/37491024232?text=${encodeURIComponent(t("whatsappMessage"))}`}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={t("writeWhatsApp")}
+        >
+          <MessageCircle size={21} />
+          <span>{t("writeWhatsApp")}</span>
+        </a>
+
+        <a
+          className="floating-contact-link phone"
+          href="tel:+37491024232"
+          aria-label={t("callNow")}
+        >
+          <Phone size={20} />
+          <span>{t("callNow")}</span>
+        </a>
+      </div>
     </div>
   );
 }
