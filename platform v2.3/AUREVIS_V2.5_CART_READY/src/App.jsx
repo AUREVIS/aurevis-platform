@@ -9,6 +9,7 @@ import AccountPage from "./pages/AccountPage";
 import AdminPage from "./pages/AdminPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import CartPage from "./pages/CartPage";
+import BenefitsPage from "./pages/BenefitsPage";
 import { useAuth } from "./context/AuthContext";
 
 function AdminRoute({ children }) {
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/academy" element={<AcademyPage />} />
+          <Route path="/horeca-benefits" element={<BenefitsPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
