@@ -1816,6 +1816,295 @@ body.catalog-modal-open {
 }
 /* Գլխավոր էջի ապրանքային և HoReCa բլոկներ */
 
+/* AUREVIS signature mix hero animation */
+
+.premium-hero { isolation: isolate; }
+.premium-hero .hero-bg,
+.premium-hero .hero-overlay,
+.premium-hero .hero-gold-glow { z-index: -2; }
+.premium-hero .hero-overlay,
+.premium-hero .hero-gold-glow { z-index: -1; }
+.premium-hero .hero-copy { position: relative; z-index: 4; }
+
+.hero-mix-scene {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: clamp(3%, 8vw, 10%);
+  width: clamp(360px, 34vw, 610px);
+  height: clamp(450px, 68vh, 720px);
+  transform: translateY(-48%);
+  pointer-events: none;
+  filter: drop-shadow(0 28px 40px rgba(0, 0, 0, 0.34));
+}
+
+.hero-mix-scene::before {
+  content: "";
+  position: absolute;
+  inset: 11% 4% 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(246, 193, 68, 0.18), transparent 68%);
+  animation: mixAura 4.8s ease-in-out infinite;
+}
+
+.mix-bottle-wrap {
+  position: absolute;
+  z-index: 5;
+  top: -7%;
+  right: 1%;
+  width: 38%;
+  height: 58%;
+  transform: rotate(-54deg);
+  transform-origin: 72% 18%;
+  animation: bottlePour 7.5s ease-in-out infinite;
+}
+
+.mix-bottle {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,.6);
+  border-radius: 32% 32% 18% 18% / 18% 18% 10% 10%;
+  background: linear-gradient(90deg, rgba(255,255,255,.28), rgba(255,255,255,.03) 35%, rgba(255,255,255,.16));
+  filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.32));
+}
+
+.mix-bottle-cap {
+  position: absolute;
+  z-index: 4;
+  top: -1%;
+  left: 29%;
+  width: 42%;
+  height: 14%;
+  border-radius: 7px 7px 4px 4px;
+  background: repeating-linear-gradient(90deg, #101412 0 4px, #273129 4px 7px);
+}
+
+.mix-bottle-neck {
+  position: absolute;
+  z-index: 2;
+  top: 7%;
+  left: 34%;
+  width: 32%;
+  height: 24%;
+  border: 2px solid rgba(255,255,255,.5);
+  background: rgba(255,255,255,.1);
+}
+
+.mix-bottle-liquid {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  left: 5px;
+  height: 76%;
+  border-radius: 28% 28% 15% 15% / 10% 10% 8% 8%;
+  background: linear-gradient(90deg, #f2a714, #ffca3a 38%, #e77810 100%);
+  box-shadow: inset 15px 0 18px rgba(255,255,255,.18);
+}
+
+.mix-bottle-label {
+  position: absolute;
+  z-index: 3;
+  right: 12%;
+  bottom: 21%;
+  left: 12%;
+  display: flex;
+  min-height: 36%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  border: 2px solid #b99136;
+  border-radius: 8px;
+  background: #fff9ed;
+  color: #443022;
+  text-align: center;
+}
+
+.mix-bottle-label b { color: #9b7425; font-family: Georgia, serif; letter-spacing: .08em; }
+.mix-bottle-label small { font-size: .48rem; font-weight: 900; letter-spacing: .08em; }
+
+.mix-stream {
+  position: absolute;
+  top: 84%;
+  left: 43%;
+  width: 9px;
+  height: 190px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffbf2e, rgba(255, 124, 13, 0.82));
+  box-shadow: 0 0 13px rgba(255, 185, 45, 0.65);
+  transform: rotate(54deg) scaleY(0);
+  transform-origin: top;
+  animation: syrupStream 7.5s ease-in-out infinite;
+}
+
+.mix-glass {
+  position: absolute;
+  z-index: 3;
+  right: 20%;
+  bottom: 8%;
+  width: 42%;
+  height: 55%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  border-top: 0;
+  border-radius: 8px 8px 52px 52px;
+  background: linear-gradient(105deg, rgba(255,255,255,.18), rgba(255,255,255,.02) 42%, rgba(255,255,255,.2));
+  box-shadow: inset 13px 0 18px rgba(255,255,255,.12), inset -9px 0 14px rgba(255,255,255,.08), 0 24px 30px rgba(0,0,0,.25);
+  animation: glassFloat 4.8s ease-in-out infinite;
+}
+
+.mix-glass-rim {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  left: -4%;
+  width: 108%;
+  height: 16px;
+  border: 3px solid rgba(255, 255, 255, 0.72);
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+}
+
+.mix-liquid {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  left: 4px;
+  height: 72%;
+  overflow: hidden;
+  border-radius: 12px 12px 48px 48px;
+  background: linear-gradient(180deg, rgba(255, 195, 60, .92), rgba(242, 104, 20, .94) 58%, rgba(160, 50, 22, .96));
+  box-shadow: inset 0 10px 24px rgba(255, 238, 137, .32);
+  animation: liquidFill 7.5s ease-in-out infinite;
+}
+
+.mix-wave {
+  position: absolute;
+  top: -18px;
+  left: -16%;
+  width: 132%;
+  height: 42px;
+  border-radius: 45%;
+  background: rgba(255, 215, 92, .85);
+}
+
+.wave-one { animation: liquidWave 2.2s linear infinite; }
+.wave-two { opacity: .45; animation: liquidWave 2.8s linear infinite reverse; }
+
+.mix-ice {
+  position: absolute;
+  z-index: 5;
+  width: 62px;
+  height: 62px;
+  border: 2px solid rgba(255,255,255,.62);
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(255,255,255,.68), rgba(190,232,226,.18));
+  box-shadow: inset 8px 8px 12px rgba(255,255,255,.16);
+  backdrop-filter: blur(2px);
+}
+.ice-one { top: 23%; left: 13%; transform: rotate(18deg); animation: iceMixOne 4.2s ease-in-out infinite; }
+.ice-two { top: 39%; right: 12%; transform: rotate(-14deg); animation: iceMixTwo 4.6s ease-in-out infinite; }
+.ice-three { top: 54%; left: 29%; transform: rotate(38deg); animation: iceMixOne 5.1s ease-in-out infinite reverse; }
+
+.mix-bubble {
+  position: absolute;
+  z-index: 6;
+  bottom: 8%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 50%;
+  animation: bubbleRise 3.2s linear infinite;
+}
+.bubble-one { left: 20%; animation-delay: -.4s; }
+.bubble-two { left: 44%; width: 12px; height: 12px; animation-delay: -1.7s; }
+.bubble-three { left: 67%; animation-delay: -2.5s; }
+.bubble-four { left: 78%; width: 6px; height: 6px; animation-delay: -1s; }
+
+.mix-fruit-slice {
+  position: absolute;
+  z-index: 8;
+  right: 8%;
+  bottom: 38%;
+  width: 96px;
+  height: 96px;
+  border: 9px solid #f1a322;
+  border-radius: 50%;
+  background: conic-gradient(from 14deg, #ffd873 0 12%, #fff0b0 12% 14%, #ffd873 14% 27%, #fff0b0 27% 29%, #ffd873 29% 43%, #fff0b0 43% 45%, #ffd873 45% 59%, #fff0b0 59% 61%, #ffd873 61% 75%, #fff0b0 75% 77%, #ffd873 77% 90%, #fff0b0 90% 92%, #ffd873 92%);
+  box-shadow: 0 12px 22px rgba(0,0,0,.24);
+  transform: rotate(-18deg);
+  animation: fruitTurn 9s linear infinite;
+}
+
+.mix-leaf {
+  position: absolute;
+  z-index: 7;
+  right: 4%;
+  bottom: 29%;
+  width: 54px;
+  height: 24px;
+  border-radius: 100% 0 100% 0;
+  background: linear-gradient(135deg, #70b562, #174f34);
+  transform: rotate(-36deg);
+}
+.leaf-two { right: 13%; bottom: 27%; transform: rotate(22deg) scale(.82); }
+
+.mix-scene-label {
+  position: absolute;
+  right: 14%;
+  bottom: 0;
+  color: rgba(255, 218, 124, .82);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+@keyframes bottlePour {
+  0%, 12%, 88%, 100% { transform: translate(14px,-10px) rotate(-42deg); }
+  25%, 72% { transform: translate(0,0) rotate(-57deg); }
+}
+@keyframes syrupStream {
+  0%, 17%, 75%, 100% { opacity: 0; transform: rotate(54deg) scaleY(0); }
+  25%, 66% { opacity: .92; transform: rotate(54deg) scaleY(1); }
+}
+@keyframes liquidFill {
+  0%, 16%, 100% { height: 52%; filter: hue-rotate(-8deg); }
+  34%, 72% { height: 74%; filter: hue-rotate(7deg); }
+}
+@keyframes liquidWave { to { transform: translateX(12%) rotate(360deg); } }
+@keyframes glassFloat { 50% { transform: translateY(-9px) rotate(.8deg); } }
+@keyframes mixAura { 50% { opacity: .58; transform: scale(1.08); } }
+@keyframes iceMixOne { 50% { transform: translate(12px,19px) rotate(52deg); } }
+@keyframes iceMixTwo { 50% { transform: translate(-14px,12px) rotate(-48deg); } }
+@keyframes bubbleRise { from { opacity: 0; transform: translateY(0); } 20% { opacity: .85; } to { opacity: 0; transform: translateY(-220px); } }
+@keyframes fruitTurn { 50% { transform: translateY(-8px) rotate(162deg); } to { transform: rotate(342deg); } }
+
+@media (max-width: 1100px) {
+  .hero-mix-scene { right: 0; width: 43vw; opacity: .78; }
+}
+
+@media (max-width: 760px) {
+  .hero-mix-scene {
+    top: 46%;
+    right: -23%;
+    width: 82vw;
+    height: 56vh;
+    opacity: .34;
+    transform: translateY(-50%) scale(.88);
+  }
+  .mix-bottle-wrap { display: none; }
+  .mix-scene-label { display: none; }
+  .premium-hero .hero-copy { text-shadow: 0 2px 14px rgba(0,0,0,.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mix-scene *, .hero-mix-scene::before { animation: none !important; }
+  .mix-stream { display: none; }
+}
+
 .home-shop-sections {
   padding: 82px clamp(20px, 5vw, 78px);
   background: #f7f2e8;
