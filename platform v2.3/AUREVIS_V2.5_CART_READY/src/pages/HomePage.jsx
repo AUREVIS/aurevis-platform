@@ -184,7 +184,10 @@ export default function HomePage() {
           <div className="home-best-grid">
             {featuredProducts.map((product) => (
               <article className="home-best-card" key={product.id}>
-                <Link className="home-best-image" to="/catalog">
+                <Link
+                  className={`home-best-image ${product.category?.includes("puree") ? "puree-featured" : ""}`}
+                  to="/catalog"
+                >
                   <span>{t("bestSellerBadge")}</span>
                   <img src={product.featuredImage} alt={product.name} loading="lazy" />
                 </Link>
