@@ -84,7 +84,6 @@ export default function HomePage() {
               src="/assets/hero-real-bottle-v2.webp"
               alt=""
             />
-            <span className="mix-stream" />
           </div>
 
           <div className="mix-real-glass-wrap">
