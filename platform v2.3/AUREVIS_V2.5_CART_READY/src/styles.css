@@ -1850,13 +1850,13 @@ body.catalog-modal-open {
 .mix-bottle-wrap {
   position: absolute;
   z-index: 5;
-  top: -7%;
-  right: 1%;
-  width: 38%;
-  height: 58%;
-  transform: rotate(-54deg);
+  top: 1%;
+  right: 2%;
+  width: 29%;
+  height: 48%;
+  transform: rotate(-12deg);
   transform-origin: 72% 18%;
-  animation: bottlePour 7.5s ease-in-out infinite;
+  animation: bottleFloat 5.8s ease-in-out infinite;
 }
 
 .mix-real-bottle {
@@ -2104,6 +2104,10 @@ body.catalog-modal-open {
 @keyframes bottlePour {
   0%, 12%, 88%, 100% { transform: translate(14px,-10px) rotate(-42deg); }
   25%, 72% { transform: translate(0,0) rotate(-57deg); }
+}
+@keyframes bottleFloat {
+  0%, 100% { transform: translateY(3px) rotate(-10deg); }
+  50% { transform: translateY(-11px) rotate(-15deg); }
 }
 @keyframes syrupStream {
   0%, 17%, 75%, 100% { opacity: 0; transform: rotate(99deg) scaleY(0); }
