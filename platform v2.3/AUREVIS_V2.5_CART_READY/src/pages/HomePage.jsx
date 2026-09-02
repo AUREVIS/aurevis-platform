@@ -3,12 +3,18 @@ import {
   BadgeCheck,
   Calculator,
   ChefHat,
+  Gift,
+  Snowflake,
+  Percent,
   Sparkles,
   Truck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function HomePage() {
+  const { t } = useLanguage();
+
   return (
     <>
       <section className="hero premium-hero">
@@ -23,79 +29,137 @@ export default function HomePage() {
 
         <div className="hero-copy">
           <p className="eyebrow">
-            ՀԱՅԱՍՏԱՆՈՒՄ ԱՌԱՋԻՆ ՄԻԱՍՆԱԿԱՆ ՊՐՈՖԵՍԻՈՆԱԼ HORECA ՀԱՐԹԱԿԸ
+            {t("heroEyebrow")}
           </p>
 
           <h1>
-            Համից՝ մինչև
+            {t("heroTitleA")}
             <br />
-            յուրահատուկ ըմպելիք։
+            {t("heroTitleB")}
           </h1>
 
           <p>
-            Պրեմիում օշարակներ, մրգային պյուրեներ և ամբողջական
-            HoReCa լուծումներ՝ սրճարանների, ռեստորանների,
-            հյուրանոցների և հրուշակեղենի արտադրամասերի համար։
+            {t("heroText")}
           </p>
 
           <div className="hero-buttons">
             <Link className="button gold" to="/catalog">
-              Բացել կատալոգը
+              {t("openCatalog")}
               <ArrowRight size={18} />
             </Link>
 
-            <a className="button glass" href="#contact">
-              Դառնալ HoReCa գործընկեր
-            </a>
+            <Link className="button glass" to="/horeca-benefits">
+              {t("becomePartner")}
+            </Link>
           </div>
 
           <div className="hero-stats">
             <article>
               <b>37+</b>
-              <span>Օշարակի համ</span>
+              <span>{t("syrupFlavors")}</span>
             </article>
 
             <article>
               <b>10+</b>
-              <span>Մրգային պյուրե</span>
+              <span>{t("purees")}</span>
             </article>
 
             <article>
-              <b>Անվճար</b>
-              <span>Առաքում Հայաստանում</span>
+              <b>{t("free")}</b>
+              <span>{t("delivery")}</span>
             </article>
 
             <article>
               <b>Bonus</b>
-              <span>Միասնական հաշվեկշիռ</span>
+              <span>{t("unifiedBalance")}</span>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section className="home-shop-sections">
+        <div className="home-section-heading">
+          <p className="eyebrow dark">AUREVIS COLLECTION</p>
+          <h2>{t("discoverProducts")}</h2>
+          <p>{t("discoverProductsText")}</p>
+        </div>
+
+        <div className="home-category-grid">
+          <Link className="home-category-card" to="/catalog">
+            <img src="/assets/syrup-strawberry.webp" alt={t("categorySyrups")} />
+            <span className="home-category-shade" />
+            <div>
+              <small>37+ {t("syrupFlavors")}</small>
+              <h3>{t("professionalSyrups")}</h3>
+              <p>{t("professionalSyrupsText")}</p>
+              <b>{t("viewCollection")} <ArrowRight size={17} /></b>
+            </div>
+          </Link>
+
+          <Link className="home-category-card" to="/catalog">
+            <img src="/assets/Mango.png" alt={t("categoryPurees")} />
+            <span className="home-category-shade" />
+            <div>
+              <small>10+ {t("purees")}</small>
+              <h3>{t("professionalPurees")}</h3>
+              <p>{t("professionalPureesText")}</p>
+              <b>{t("viewCollection")} <ArrowRight size={17} /></b>
+            </div>
+          </Link>
+
+          <Link className="home-category-card" to="/horeca-benefits">
+            <img src="/assets/aurevis-partnership.jpg" alt={t("horecaSolutions")} />
+            <span className="home-category-shade" />
+            <div>
+              <small>AUREVIS HoReCa</small>
+              <h3>{t("horecaSolutions")}</h3>
+              <p>{t("horecaSolutionsText")}</p>
+              <b>{t("learnBenefits")} <ArrowRight size={17} /></b>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      <section className="home-benefits-promo">
+        <div className="home-benefits-copy">
+          <p className="eyebrow">{t("benefitsEyebrow")}</p>
+          <h2>{t("homeBenefitsTitle")}</h2>
+          <p>{t("homeBenefitsText")}</p>
+          <Link className="button gold" to="/horeca-benefits">
+            {t("learnBenefits")} <ArrowRight size={18} />
+          </Link>
+        </div>
+
+        <div className="home-benefit-items">
+          <article><Snowflake /><b>5 KG</b><span>{t("iceGiftShort")}</span></article>
+          <article><Percent /><b>5–9%</b><span>{t("cashbackShort")}</span></article>
+          <article><Gift /><b>3 {t("monthsShort")}</b><span>{t("giftsShort")}</span></article>
         </div>
       </section>
 
       <section className="feature-strip premium-strip">
         <article>
           <BadgeCheck />
-          <b>Պրեմիում որակ</b>
-          <span>Կայուն համ և արդյունք</span>
+          <b>{t("quality")}</b>
+          <span>{t("stable")}</span>
         </article>
 
         <article>
           <ChefHat />
           <b>Recipe Academy</b>
-          <span>Բաղադրատոմսեր և խորհուրդներ</span>
+          <span>{t("recipes")}</span>
         </article>
 
         <article>
           <Calculator />
-          <b>Profit Tools</b>
-          <span>Ինքնարժեք և շահույթ</span>
+          <b>{t("profitTools")}</b>
+          <span>{t("costProfit")}</span>
         </article>
 
         <article>
           <Truck />
-          <b>Անվճար առաքում</b>
-          <span>Ամբողջ Հայաստանում</span>
+          <b>{t("freeDelivery")}</b>
+          <span>{t("allArmenia")}</span>
         </article>
       </section>
 
@@ -106,14 +170,11 @@ export default function HomePage() {
           </p>
 
           <h2>
-            Ոչ միայն ապրանք։ Ամբողջական HoReCa
-            գործընկերություն։
+            {t("partnershipTitle")}
           </h2>
 
           <p>
-            Պատվերներ, Wallet, Bonus, Academy,
-            սարքավորումներ և Admin Control Center՝
-            մեկ միասնական հարթակում։
+            {t("partnershipText")}
           </p>
 
           <div className="story-points">
@@ -132,6 +193,10 @@ export default function HomePage() {
               Business calculators
             </span>
           </div>
+
+          <Link className="story-benefits-link" to="/horeca-benefits">
+            {t("learnBenefits")} <ArrowRight size={17} />
+          </Link>
         </div>
 
         <img
