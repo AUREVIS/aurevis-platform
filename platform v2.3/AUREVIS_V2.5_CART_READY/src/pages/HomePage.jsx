@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   BadgeCheck,
@@ -6,14 +7,63 @@ import {
   Gift,
   Snowflake,
   Percent,
+  ShoppingBag,
   Sparkles,
   Truck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { useCart } from "../context/CartContext";
+import { getCatalogProducts } from "../lib/catalog";
+
+const featuredSelection = [
+  { name: "strawberry", category: "syrup", image: "/assets/syrups/strawberry.png" },
+  { name: "passion fruit", category: "syrup", image: "/assets/syrups/passion-fruit.png" },
+  { name: "mojito", category: "syrup", image: "/assets/syrups/mojito.png" },
+  { name: "mango", category: "puree", image: "/assets/Mango.png" },
+  { name: "berry mix", category: "puree", image: "/assets/Berri Mix.png" },
+  { name: "raspberry", category: "puree", image: "/assets/RaspBerry.png" },
+];
+
+const money = (value, language) =>
+  new Intl.NumberFormat({ hy: "hy-AM", ru: "ru-RU", en: "en-US", ka: "ka-GE" }[language] || "hy-AM")
+    .format(Number(value || 0)) + " ֏";
+
+const normalized = (value = "") => String(value).toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
 
 export default function HomePage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { addItem } = useCart();
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [addedId, setAddedId] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    getCatalogProducts().then(({ products }) => {
+      if (!active) return;
+
+      const selected = featuredSelection.map((wanted) => {
+        const match = products.find((product) => {
+          const name = normalized(`${product.name || ""} ${product.nameHy || ""}`);
+          const category = normalized(product.category);
+          return name.includes(wanted.name) && category.includes(wanted.category);
+        });
+
+        return match ? { ...match, featuredImage: wanted.image } : null;
+      }).filter(Boolean);
+
+      setFeaturedProducts(selected);
+    });
+
+    return () => { active = false; };
+  }, []);
+
+  function addFeatured(product) {
+    addItem(product);
+    setAddedId(product.id);
+    window.setTimeout(() => setAddedId(null), 1200);
+  }
 
   return (
     <>
@@ -119,6 +169,42 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {featuredProducts.length > 0 && (
+        <section className="home-best-sellers">
+          <div className="home-best-heading">
+            <div>
+              <p className="eyebrow dark">AUREVIS BEST SELLERS</p>
+              <h2>{t("bestSellersTitle")}</h2>
+              <p>{t("bestSellersText")}</p>
+            </div>
+            <Link to="/catalog">{t("viewAllProducts")} <ArrowRight size={17} /></Link>
+          </div>
+
+          <div className="home-best-grid">
+            {featuredProducts.map((product) => (
+              <article className="home-best-card" key={product.id}>
+                <Link className="home-best-image" to="/catalog">
+                  <span>{t("bestSellerBadge")}</span>
+                  <img src={product.featuredImage} alt={product.name} loading="lazy" />
+                </Link>
+                <div className="home-best-info">
+                  <small>{t(product.category?.includes("puree") ? "categoryPurees" : "categorySyrups")}</small>
+                  <h3>{language === "hy" && product.nameHy ? product.nameHy : product.name}</h3>
+                  <p>{product.volume || (product.category?.includes("puree") ? "1 L" : "700 ml")}</p>
+                  <div>
+                    <b>{money(product.price, language)}</b>
+                    <button type="button" onClick={() => addFeatured(product)}>
+                      <ShoppingBag size={17} />
+                      {addedId === product.id ? t("added") : t("add")}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="home-benefits-promo">
         <div className="home-benefits-copy">
