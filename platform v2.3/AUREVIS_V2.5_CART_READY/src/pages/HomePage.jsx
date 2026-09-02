@@ -77,6 +77,41 @@ export default function HomePage() {
         <div className="hero-overlay" />
         <div className="hero-gold-glow" />
 
+        <div className="hero-mix-scene" aria-hidden="true">
+          <div className="mix-bottle-wrap">
+            <div className="mix-bottle">
+              <span className="mix-bottle-cap" />
+              <span className="mix-bottle-neck" />
+              <span className="mix-bottle-liquid" />
+              <span className="mix-bottle-label">
+                <b>AUREVIS</b>
+                <small>PASSION FRUIT</small>
+              </span>
+            </div>
+            <span className="mix-stream" />
+          </div>
+
+          <div className="mix-glass">
+            <span className="mix-glass-rim" />
+            <div className="mix-liquid">
+              <span className="mix-wave wave-one" />
+              <span className="mix-wave wave-two" />
+            </div>
+            <i className="mix-ice ice-one" />
+            <i className="mix-ice ice-two" />
+            <i className="mix-ice ice-three" />
+            <i className="mix-bubble bubble-one" />
+            <i className="mix-bubble bubble-two" />
+            <i className="mix-bubble bubble-three" />
+            <i className="mix-bubble bubble-four" />
+          </div>
+
+          <span className="mix-fruit-slice" />
+          <span className="mix-leaf leaf-one" />
+          <span className="mix-leaf leaf-two" />
+          <span className="mix-scene-label">AUREVIS · SIGNATURE MIX</span>
+        </div>
+
         <div className="hero-copy">
           <p className="eyebrow">
             {t("heroEyebrow")}
