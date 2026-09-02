@@ -322,6 +322,69 @@ html,body,#root{max-width:100%;overflow-x:hidden}
     max-height: 260px !important;
   }
 }
+
+/* Արագ կապ՝ WhatsApp և հեռախոս */
+
+.floating-contact {
+  position: fixed;
+  z-index: 90;
+  right: 20px;
+  bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.floating-contact-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 17px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 12px 30px rgba(0, 35, 25, 0.24);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-contact-link:hover {
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(0, 35, 25, 0.3);
+}
+
+.floating-contact-link.whatsapp {
+  background: #25a95b;
+}
+
+.floating-contact-link.phone {
+  background: #063e30;
+  border-color: rgba(230, 185, 67, 0.55);
+}
+
+@media (max-width: 600px) {
+  .floating-contact {
+    right: 12px;
+    bottom: 14px;
+    gap: 8px;
+  }
+
+  .floating-contact-link {
+    width: 48px;
+    min-height: 48px;
+    padding: 0;
+  }
+
+  .floating-contact-link span {
+    display: none;
+  }
+}
 /* AUREVIS catalog — corrected image size */
 
 .catalog-page .product-art {
