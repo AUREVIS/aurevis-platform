@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { BadgeCheck, Building2, Clock3, Gift, History, LogOut, Snowflake, Sparkles, Trophy, WalletCards } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { BadgeCheck, Building2, Clock3, Gift, History, LogOut, Package, RotateCcw, Snowflake, Sparkles, Trophy, WalletCards } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { getCatalogProducts } from "../lib/catalog";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 import { useLanguage } from "../context/LanguageContext";
 
 const money = (value) => `${new Intl.NumberFormat("hy-AM").format(Number(value || 0))} ֏`;
@@ -28,6 +30,12 @@ const orderStatusLabels = {
   completed: "Ավարտված",
   cancelled: "Չեղարկված",
 };
+
+const accountOrderSelect = `
+  id, order_number, status, subtotal, total_amount, discount_amount,
+  cashback_earned, created_at, updated_at,
+  order_items(id, product_id, sku, product_name, volume, unit_price, quantity)
+`;
 
 function AuthForm() {
   const { configured, signIn, signUp } = useAuth();
@@ -129,11 +137,14 @@ function AuthForm() {
 
 export default function AccountPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { loading, user, profile, profileError, signOut } = useAuth();
+  const { replaceItems } = useCart();
   const { t } = useLanguage();
   const [wallet, setWallet] = useState(null);
   const [orders, setOrders] = useState([]);
   const [dataError, setDataError] = useState("");
+  const [repeatBusyId, setRepeatBusyId] = useState(null);
 
   useEffect(() => {
     if (!user || !supabase) return;
@@ -141,7 +152,7 @@ export default function AccountPage() {
 
     Promise.all([
       supabase.from("wallets").select("balance").eq("user_id", user.id).maybeSingle(),
-      supabase.from("orders").select("id, order_number, status, total_amount, cashback_earned, created_at, updated_at")
+      supabase.from("orders").select(accountOrderSelect)
         .eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
     ]).then(([walletResult, ordersResult]) => {
       if (!active) return;
@@ -156,7 +167,7 @@ export default function AccountPage() {
     const intervalId = window.setInterval(async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, order_number, status, total_amount, cashback_earned, created_at, updated_at")
+        .select(accountOrderSelect)
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
@@ -177,21 +188,56 @@ export default function AccountPage() {
   const loyaltyTier = String(profile?.loyalty_tier || "bronze").toLowerCase();
   const tierRates = { bronze: 5, silver: 7, gold: 9 };
 
-  const renderOrders = (list) => (
+  async function repeatOrder(order) {
+    setRepeatBusyId(order.id);
+    setDataError("");
+    const { products: currentProducts } = await getCatalogProducts();
+    const repeatedProducts = (order.order_items || [])
+      .filter((item) => Number(item.unit_price || 0) > 0)
+      .map((item) => {
+        const currentProduct = currentProducts.find((product) =>
+          product.id === item.product_id || (item.sku && product.sku === item.sku)
+        );
+        return currentProduct ? { ...currentProduct, quantity: Number(item.quantity || 1) } : null;
+      })
+      .filter(Boolean);
+
+    setRepeatBusyId(null);
+    if (!repeatedProducts.length) {
+      setDataError("Այս պատվերի ապրանքներն այժմ հասանելի չեն։");
+      return;
+    }
+    replaceItems(repeatedProducts);
+    navigate("/cart");
+  }
+
+  const renderOrders = (list, repeatable = false) => (
     <div className="order-list">
       {list.map((order) => (
-        <article key={order.id}>
-          <div>
+        <article className="account-order-card" key={order.id}>
+          <div className="account-order-main">
             <b>#{order.order_number}</b>
             <span>{new Date(order.created_at).toLocaleDateString("hy-AM")}</span>
+            <span className="account-order-products">
+              <Package size={14} />
+              {(order.order_items || []).map((item) => `${item.product_name} × ${item.quantity}`).join(", ") || "Ապրանքների ցանկը բացակայում է"}
+            </span>
             {order.status === "completed" && Number(order.cashback_earned) > 0 && (
               <small className="cashback-note">+{money(order.cashback_earned)} cashback</small>
             )}
           </div>
-          <strong>{money(order.total_amount)}</strong>
-          <em className={`order-status ${order.status}`}>
-            {orderStatusLabels[order.status] || order.status}
-          </em>
+          <div className="account-order-side">
+            <strong>{money(order.total_amount)}</strong>
+            {Number(order.discount_amount || 0) > 0 && <small>−{money(order.discount_amount)} զեղչ</small>}
+          </div>
+          <div className="account-order-actions">
+            <em className={`order-status ${order.status}`}>{orderStatusLabels[order.status] || order.status}</em>
+            {repeatable && order.status !== "cancelled" && (
+              <button type="button" disabled={repeatBusyId === order.id} onClick={() => repeatOrder(order)}>
+                <RotateCcw size={16} /> {repeatBusyId === order.id ? "Բեռնվում է…" : "Կրկնել պատվերը"}
+              </button>
+            )}
+          </div>
         </article>
       ))}
     </div>
@@ -209,6 +255,7 @@ export default function AccountPage() {
           {location.state?.adminDenied && (
             <p className="notice-banner">Այս բաժինը հասանելի է միայն AUREVIS Admin հաշվին։</p>
           )}
+          {(dataError || profileError) && <p className="notice-banner error">{dataError || profileError}</p>}
           <div className="account-topbar">
             <div>
               <span>Բարի գալուստ</span>
@@ -306,7 +353,7 @@ export default function AccountPage() {
               <div><p className="eyebrow dark">ORDER HISTORY</p><h2><History size={25} /> Պատվերների պատմություն</h2></div>
               <span>{orderHistory.length} պատվեր</span>
             </div>
-            {orderHistory.length ? renderOrders(orderHistory) : (
+            {orderHistory.length ? renderOrders(orderHistory, true) : (
               <div className="empty-state compact">
                 <h3>Պատմությունը դեռ դատարկ է</h3>
                 <p>Ավարտված և չեղարկված պատվերներն այստեղ կպահպանվեն։</p>
