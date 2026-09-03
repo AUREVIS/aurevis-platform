@@ -3645,3 +3645,95 @@ img.modal-product-image {
     border-color: #e7dfd0;
   }
 }
+.order-list article.account-order-card {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+}
+
+.account-order-main {
+  min-width: 0;
+}
+
+.account-order-products {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 680px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-order-products svg {
+  flex: 0 0 auto;
+  color: #a77c28;
+}
+
+.account-order-side {
+  display: flex !important;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.account-order-side small {
+  color: #b52323;
+}
+
+.account-order-actions {
+  display: flex !important;
+  align-items: flex-end;
+  gap: 7px !important;
+}
+
+.account-order-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: #0b3d2e;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.account-order-actions button:disabled {
+  cursor: wait;
+  opacity: .6;
+}
+
+@media (max-width: 760px) {
+  .order-list article.account-order-card {
+    grid-template-columns: 1fr auto;
+  }
+
+  .account-order-main {
+    grid-column: 1 / -1;
+  }
+
+  .account-order-products {
+    white-space: normal;
+  }
+
+  .account-order-actions {
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-list article.account-order-card {
+    grid-template-columns: 1fr;
+  }
+
+  .account-order-side,
+  .account-order-actions {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .account-order-actions button {
+    width: 100%;
+  }
+}
