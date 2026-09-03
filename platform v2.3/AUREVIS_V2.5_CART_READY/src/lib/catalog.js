@@ -1,6 +1,37 @@
 import { supabase } from "./supabase";
 import { products as fallbackProducts } from "../data/products";
 
+const twentyPercentSyrups = new Set([
+  "strawberry",
+  "passion fruit",
+  "passionfruit",
+  "mango",
+  "mojito",
+  "blueberry",
+]);
+
+const normalizePromotionText = (value = "") =>
+  String(value).toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+
+export function applyCatalogPromotion(product) {
+  const category = normalizePromotionText(product?.category);
+  const name = normalizePromotionText(product?.name);
+  const isTarget = ["syrup", "syrups"].includes(category) && twentyPercentSyrups.has(name);
+  const discountPercent = Number(product?.discountPercent ?? (isTarget ? 20 : 0));
+
+  if (!isTarget || discountPercent <= 0) {
+    return { ...product, discountPercent: 0, originalPrice: null };
+  }
+
+  const originalPrice = Number(product?.originalPrice || product?.price || 0);
+  return {
+    ...product,
+    originalPrice,
+    discountPercent,
+    price: Math.round(originalPrice * (100 - discountPercent) / 100),
+  };
+}
+
 const tiramisuReplacements = {
   "strawberry cheesecake": {
     name: "Tiramisu Classic",
@@ -20,13 +51,13 @@ const tiramisuReplacements = {
 };
 
 export async function getCatalogProducts() {
-  if (!supabase) return { products: fallbackProducts, source: "fallback" };
+  if (!supabase) return { products: fallbackProducts.map(applyCatalogPromotion), source: "fallback" };
 
   const { data, error } = await supabase
     .from("products")
     .select(`
       id, sku, name_hy, name_en, description_hy, volume,
-      retail_price, horeca_price, bonus_reward, ice_gift_kg,
+      retail_price, horeca_price, bonus_reward, ice_gift_kg, discount_percent,
       stock_quantity, image_url, is_active, sort_order,
       categories ( slug, name_hy, name_en )
     `)
@@ -35,7 +66,7 @@ export async function getCatalogProducts() {
 
   if (error) {
     console.error("Catalog load failed:", error);
-    return { products: fallbackProducts, source: "fallback", error };
+    return { products: fallbackProducts.map(applyCatalogPromotion), source: "fallback", error };
   }
 
   return {
@@ -46,7 +77,7 @@ export async function getCatalogProducts() {
         .trim();
       const tiramisu = tiramisuReplacements[originalName];
 
-      return {
+      return applyCatalogPromotion({
         id: item.id,
         sku: item.sku,
         category: item.categories?.slug || "other",
@@ -56,13 +87,14 @@ export async function getCatalogProducts() {
         description: tiramisu?.description || item.description_hy || "",
         volume: item.volume || "",
         price: item.retail_price || 0,
+        discountPercent: Number(item.discount_percent || 0),
         horecaPrice: item.horeca_price,
         bonus: item.bonus_reward || 0,
         iceGiftKg: Number(item.ice_gift_kg || 0),
         stock: item.stock_quantity || 0,
         image: tiramisu ? "/assets/aurevis-tiramisu.webp" : item.image_url || null,
         accent: fallbackProducts[index % fallbackProducts.length]?.accent || "#9a762e",
-      };
+      });
     })
   };
 }
