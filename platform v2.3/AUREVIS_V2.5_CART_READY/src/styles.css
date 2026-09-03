@@ -3,6 +3,275 @@
   color:#08251c;background:#f7f2e8;font-synthesis:none
 }
 
+/* AUREVIS HoReCa Daily Gift */
+.daily-gift-page {
+  min-height: calc(100vh - 84px);
+  display: grid;
+  place-items: center;
+  padding: 48px 24px 72px;
+  color: #fffaf0;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(222, 174, 63, 0.2), transparent 30%),
+    radial-gradient(circle at 12% 82%, rgba(33, 104, 77, 0.55), transparent 34%),
+    linear-gradient(145deg, #002d22, #064936 68%, #002c22);
+  overflow: hidden;
+}
+
+.daily-gift-shell {
+  width: min(1180px, 100%);
+  text-align: center;
+}
+
+.daily-gift-heading {
+  width: min(760px, 100%);
+  margin: 0 auto 32px;
+}
+
+.daily-gift-heading .eyebrow {
+  color: #e8b83f;
+  letter-spacing: 0.22em;
+}
+
+.daily-gift-heading h1 {
+  margin: 12px 0 14px;
+  color: #fffaf0;
+  font-size: clamp(2.35rem, 5vw, 5rem);
+  line-height: 0.98;
+}
+
+.daily-gift-heading > p:last-child {
+  margin: 0 auto;
+  max-width: 680px;
+  color: rgba(255, 250, 240, 0.74);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.daily-gift-stage {
+  position: relative;
+  min-height: 440px;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  border: 1px solid rgba(231, 183, 63, 0.35);
+  border-radius: 34px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
+  box-shadow: 0 35px 80px rgba(0, 18, 13, 0.38), inset 0 1px rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+}
+
+.daily-bottle-wheel {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(72px, 1fr));
+  align-items: end;
+  gap: 10px;
+}
+
+.daily-mini-bottle {
+  min-width: 0;
+  padding: 15px 7px 10px;
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 999px 999px 22px 22px;
+  background: rgba(255,255,255,0.055);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.daily-mini-bottle:disabled { cursor: wait; }
+
+.daily-mini-bottle:nth-child(odd) { transform: translateY(-24px); }
+.daily-mini-bottle:hover { border-color: #e7b73f; transform: translateY(-12px) scale(1.05); }
+.daily-mini-bottle:nth-child(odd):hover { transform: translateY(-34px) scale(1.05); }
+
+.daily-mini-bottle img {
+  display: block;
+  width: 100%;
+  height: 210px;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 14px rgba(0,0,0,0.28));
+}
+
+.daily-mini-bottle span {
+  display: block;
+  min-height: 28px;
+  color: rgba(255,250,240,0.74);
+  font: 700 0.68rem/1.15 system-ui, sans-serif;
+}
+
+.daily-play-button {
+  position: absolute;
+  left: 50%;
+  bottom: -28px;
+  z-index: 4;
+  transform: translateX(-50%);
+  min-width: 245px;
+  min-height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 25px;
+  border: 0;
+  border-radius: 999px;
+  color: #043728;
+  background: linear-gradient(135deg, #f5cc62, #daa630);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 0 0 8px rgba(226,174,49,0.1);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.daily-play-button:disabled { cursor: wait; opacity: 0.78; }
+
+.daily-gift-stage.is-spinning .daily-mini-bottle {
+  animation: aurevisBottleShuffle 0.52s ease-in-out infinite alternate;
+  animation-delay: calc(var(--gift-index) * -0.075s);
+  border-color: rgba(235,188,69,0.72);
+}
+
+.daily-gift-stage.is-spinning .daily-play-button svg { animation: aurevisSparkSpin 0.8s linear infinite; }
+
+@keyframes aurevisBottleShuffle {
+  0% { transform: translateY(-14px) scale(0.88); filter: blur(0); }
+  50% { transform: translateY(18px) scale(1.08); filter: blur(1px); }
+  100% { transform: translateY(-36px) scale(0.94); filter: blur(0); }
+}
+
+@keyframes aurevisSparkSpin { to { transform: rotate(360deg); } }
+
+.daily-gift-stage.has-result { min-height: 480px; }
+
+.daily-gift-result {
+  position: relative;
+  width: min(760px, 100%);
+  animation: aurevisResultIn 0.7s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes aurevisResultIn {
+  from { opacity: 0; transform: translateY(-70px) scale(0.86); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.daily-result-sparkle {
+  width: 34px;
+  height: 34px;
+  color: #efc450;
+  animation: aurevisSparkSpin 4s linear infinite;
+}
+
+.daily-gift-result > p {
+  margin: 8px 0 22px;
+  color: #f1c451;
+  font-size: clamp(1.45rem, 3vw, 2.45rem);
+  font-weight: 900;
+}
+
+.daily-result-rewards {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 18px;
+}
+
+.daily-result-rewards article {
+  width: min(310px, 46%);
+  min-height: 250px;
+  border: 1px solid rgba(232,184,63,0.48);
+  border-radius: 26px;
+  background: rgba(255,250,240,0.08);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.22);
+}
+
+.daily-bottle-prize {
+  display: grid;
+  grid-template-columns: 52% 48%;
+  align-items: center;
+  padding: 14px;
+}
+
+.daily-bottle-prize img {
+  width: 100%;
+  height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 18px rgba(0,0,0,0.34));
+}
+
+.daily-bottle-prize div,
+.daily-cashback-prize {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.daily-bottle-prize svg,
+.daily-cashback-prize svg { color: #efc450; }
+.daily-bottle-prize span,
+.daily-cashback-prize span { color: rgba(255,250,240,0.72); }
+.daily-bottle-prize b { font-size: 1.18rem; }
+.daily-cashback-prize strong { color: #f2c44e; font-size: clamp(4rem, 8vw, 6.4rem); line-height: 1; }
+.daily-gift-result > small { display: block; margin-top: 20px; color: rgba(255,250,240,0.68); }
+
+.daily-result-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.daily-result-actions .submit-button,
+.daily-back-link { display: inline-flex; width: auto; text-decoration: none; }
+.daily-result-actions > a:last-child { color: #fffaf0; }
+.daily-gift-error { width: min(640px, 100%); margin: 42px auto 0; }
+
+.daily-gift-account-link {
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0 22px;
+  padding: 17px 20px;
+  border: 1px solid rgba(205, 153, 35, 0.38);
+  border-radius: 18px;
+  color: #fff8e7 !important;
+  background: linear-gradient(110deg, #0a4b39, #14664d);
+  text-decoration: none;
+  box-shadow: 0 14px 30px rgba(5, 45, 33, 0.16);
+}
+
+.daily-gift-account-link svg { color: #edbd45; }
+.daily-gift-account-link span { display: flex; flex-direction: column; gap: 3px; }
+.daily-gift-account-link small { color: rgba(255,248,231,0.72); }
+
+@media (max-width: 900px) {
+  .daily-bottle-wheel { grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .daily-mini-bottle:nth-child(odd) { transform: none; }
+  .daily-mini-bottle img { height: 128px; }
+  .daily-gift-stage { min-height: 510px; }
+}
+
+@media (max-width: 600px) {
+  .daily-gift-page { min-height: calc(100vh - 68px); padding: 30px 12px 64px; }
+  .daily-gift-heading { margin-bottom: 22px; }
+  .daily-gift-heading h1 { font-size: 2.2rem; }
+  .daily-gift-stage { min-height: 450px; padding: 16px 10px 38px; border-radius: 24px; }
+  .daily-bottle-wheel { gap: 5px; }
+  .daily-mini-bottle { padding: 8px 3px 6px; border-radius: 999px 999px 14px 14px; }
+  .daily-mini-bottle img { height: 102px; }
+  .daily-mini-bottle span { min-height: 22px; font-size: 0.54rem; }
+  .daily-play-button { min-width: 210px; min-height: 52px; font-size: 0.88rem; }
+  .daily-gift-stage.has-result { min-height: 560px; }
+  .daily-result-rewards { flex-direction: column; align-items: center; }
+  .daily-result-rewards article { width: min(320px, 100%); min-height: 190px; }
+  .daily-bottle-prize { min-height: 230px !important; }
+  .daily-bottle-prize img { height: 210px; }
+  .daily-cashback-prize strong { font-size: 4.8rem; }
+  .daily-result-actions { flex-direction: column; gap: 12px; }
+}
+
 .account-status-note {
   margin: -8px 0 18px;
   color: #64716c;
