@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { applyCatalogPromotion } from "../lib/catalog";
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("aurevis_cart")) || []; }
+    try { return (JSON.parse(localStorage.getItem("aurevis_cart")) || []).map(applyCatalogPromotion); }
     catch { return []; }
   });
 
@@ -20,8 +21,8 @@ export function CartProvider({ children }) {
       setItems((current) => {
         const existing = current.find((item) => item.id === product.id);
         if (existing) return current.map((item) => item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 } : item);
-        return [...current, { ...product, quantity: 1 }];
+          ? { ...item, ...applyCatalogPromotion(product), quantity: item.quantity + 1 } : item);
+        return [...current, { ...applyCatalogPromotion(product), quantity: 1 }];
       });
     },
     setQuantity(id, quantity) {
