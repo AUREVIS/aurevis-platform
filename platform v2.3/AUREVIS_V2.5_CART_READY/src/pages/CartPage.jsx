@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "../context/CartContext";
@@ -14,7 +14,6 @@ export default function CartPage() {
   const { user, profile } = useAuth();
   const [form, setForm] = useState({
     phone: profile?.phone || "",
-    whatsapp: profile?.phone || "",
     address: "",
     notes: "",
   });
@@ -31,13 +30,15 @@ export default function CartPage() {
     .filter((item) => ["syrup", "syrups", "puree", "purees"].includes(String(item.category || "").toLowerCase()))
     .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 
-  const update = (event) => setForm((current) => {
-    const next = { ...current, [event.target.name]: event.target.value };
-    if (event.target.name === "phone" && (!current.whatsapp || current.whatsapp === current.phone)) {
-      next.whatsapp = event.target.value;
-    }
-    return next;
-  });
+  useEffect(() => {
+    if (!profile?.phone) return;
+    setForm((current) => ({ ...current, phone: profile.phone }));
+  }, [profile?.phone]);
+
+  const update = (event) => setForm((current) => ({
+    ...current,
+    [event.target.name]: event.target.value,
+  }));
 
   async function submitOrder(event) {
     event.preventDefault();
@@ -54,7 +55,7 @@ export default function CartPage() {
         name: item.name,
         quantity: item.quantity,
         payment_method: paymentMethod,
-        whatsapp_number: whatsappOptIn ? form.whatsapp.trim() : "",
+        whatsapp_number: whatsappOptIn ? form.phone.trim() : "",
         whatsapp_opt_in: whatsappOptIn,
       })),
     });
@@ -70,7 +71,7 @@ export default function CartPage() {
             orderNumber,
             customer: profile?.company_name || profile?.full_name || user.email || "Հաճախորդ",
             phone: form.phone.trim(),
-            whatsapp: whatsappOptIn ? form.whatsapp.trim() : "",
+            whatsapp: whatsappOptIn ? form.phone.trim() : "",
             whatsappOptIn,
             address: form.address.trim(),
             notes: form.notes.trim(),
@@ -130,7 +131,18 @@ export default function CartPage() {
               </div>
             )}
             {!user && <p className="form-message error"><Link to="/account">{t("signInToOrder")}</Link></p>}
-            <label>{t("phone")}<input required name="phone" value={form.phone} onChange={update} placeholder="+374…" /></label>
+            <label>
+              {t("phone")}
+              <input
+                required
+                name="phone"
+                value={form.phone}
+                onChange={update}
+                readOnly={Boolean(profile?.phone)}
+                placeholder="+374…"
+              />
+              {profile?.phone && <small className="checkout-phone-hint">{t("registeredPhone")}</small>}
+            </label>
             <label className="whatsapp-consent">
               <input
                 type="checkbox"
@@ -139,9 +151,6 @@ export default function CartPage() {
               />
               <span>{t("whatsappUpdates")}</span>
             </label>
-            {whatsappOptIn && (
-              <label>{t("whatsappNumber")}<input required name="whatsapp" value={form.whatsapp} onChange={update} placeholder="+374…" /></label>
-            )}
             <label>{t("address")}<input required name="address" value={form.address} onChange={update} /></label>
             <label>
               {t("paymentMethod")}
