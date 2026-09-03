@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import IntroScreen from "./components/IntroScreen";
 import HomePage from "./pages/HomePage";
 import CatalogPage from "./pages/CatalogPage";
+import ProductPage from "./pages/ProductPage";
 import AcademyPage from "./pages/AcademyPage";
 import AccountPage from "./pages/AccountPage";
 import AdminPage from "./pages/AdminPage";
@@ -72,6 +73,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="/academy" element={<AcademyPage />} />
           <Route path="/horeca-benefits" element={<BenefitsPage />} />
           <Route path="/horeca-daily-gift" element={<HoReCaDailyGiftPage />} />
