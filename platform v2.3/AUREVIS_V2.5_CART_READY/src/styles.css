@@ -3520,3 +3520,128 @@ img.modal-product-image {
   .admin-product-final-price { justify-content: flex-end; text-align: right; }
   .admin-products-list article > button { width: 100%; }
 }
+.admin-invoice-brand {
+  display: none;
+}
+
+.admin-order-contact-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  border: 1px solid rgba(229, 185, 72, .5);
+  border-radius: 999px;
+  padding: 13px 18px;
+  background: transparent;
+  color: #f1cf73;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+@media print {
+  @page { size: A4; margin: 14mm; }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .admin-order-modal,
+  .admin-order-modal * {
+    visibility: visible !important;
+  }
+
+  .admin-order-modal {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: visible;
+    padding: 0;
+    background: #fff;
+  }
+
+  .admin-order-dialog {
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: #fff;
+    color: #10281f;
+    box-shadow: none;
+  }
+
+  .admin-order-modal-close,
+  .admin-order-contact-actions {
+    display: none !important;
+  }
+
+  .admin-invoice-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .admin-invoice-brand img {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+  }
+
+  .admin-invoice-brand span {
+    display: flex;
+    flex-direction: column;
+    color: #9a762e;
+    letter-spacing: .12em;
+  }
+
+  .admin-invoice-brand small {
+    margin-top: 4px;
+    font-size: 8px;
+  }
+
+  .admin-order-dialog-heading {
+    display: block;
+    border-bottom: 2px solid #c89b3c;
+    padding: 0 0 16px;
+  }
+
+  .admin-order-dialog-heading h2,
+  .admin-order-customer-grid b,
+  .admin-order-products,
+  .admin-order-summary,
+  .admin-order-note {
+    color: #10281f;
+  }
+
+  .admin-order-dialog-heading > .order-status {
+    display: inline-flex;
+    margin-top: 10px;
+    border: 1px solid #c89b3c;
+    color: #76591e;
+  }
+
+  .admin-order-customer-grid > div,
+  .admin-order-products,
+  .admin-order-summary,
+  .admin-order-note {
+    border-color: #ddd3bf;
+    background: #fff;
+    break-inside: avoid;
+  }
+
+  .admin-order-customer-grid span,
+  .admin-order-customer-grid svg,
+  .admin-order-products small,
+  .admin-order-dialog-heading > div > span,
+  .admin-order-note p {
+    color: #5d6d66;
+  }
+
+  .admin-order-products > div,
+  .admin-order-summary > div {
+    border-color: #e7dfd0;
+  }
+}
