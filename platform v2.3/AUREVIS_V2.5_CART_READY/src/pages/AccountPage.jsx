@@ -241,6 +241,15 @@ export default function AccountPage() {
             </article>
           </div>
 
+          {profile?.account_type !== "horeca" && profile?.role !== "admin" && (
+            <section className="horeca-bonus-panel approved">
+              <Link className="daily-gift-account-link" to="/horeca-daily-gift">
+                <Sparkles />
+                <span><b>Օրվա անակնկալ</b><small>Ստացիր 5–10% զեղչ և հնարավորություն՝ շիշ շահելու</small></span>
+              </Link>
+            </section>
+          )}
+
           {profile?.account_type === "horeca" && (
             <section className={`horeca-bonus-panel ${profile?.horeca_status === "approved" ? "approved" : "pending"}`}>
               <div className="horeca-bonus-heading">

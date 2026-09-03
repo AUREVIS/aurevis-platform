@@ -26,15 +26,19 @@ export default function CartPage() {
 
   const isHoReCaAccount = profile?.account_type === "horeca";
   const isApprovedHoReCa = isHoReCaAccount && profile?.horeca_status === "approved";
+  const hasDailyGiftAccess = Boolean(user && profile && profile?.role !== "admin");
   const tierRates = { bronze: 5, silver: 7, gold: 9 };
   const cashbackRate = tierRates[String(profile?.loyalty_tier || "bronze").toLowerCase()] || 5;
   const dailyCashbackRate = dailyPromo && !dailyPromo.cashback_redeemed ? Number(dailyPromo.cashback_rate || 0) : 0;
+  const dailyDiscountRate = dailyPromo && !dailyPromo.discount_redeemed ? Number(dailyPromo.discount_rate || 0) : 0;
   const effectiveCashbackRate = Math.max(isApprovedHoReCa ? cashbackRate : 0, dailyCashbackRate);
   const dailyGiftActive = Boolean(dailyPromo?.gift_won && !dailyPromo?.gift_redeemed);
   const eligibleBottleCount = items
     .filter((item) => ["syrup", "syrups", "puree", "purees"].includes(String(item.category || "").toLowerCase()))
     .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
   const totalIceGiftKg = (isApprovedHoReCa ? eligibleBottleCount * 5 : 0) + (dailyGiftActive ? 5 : 0);
+  const discountAmount = Math.round(total * dailyDiscountRate / 100);
+  const payableTotal = Math.max(0, total - discountAmount);
 
   useEffect(() => {
     if (!profile?.phone) return;
@@ -42,7 +46,7 @@ export default function CartPage() {
   }, [profile?.phone]);
 
   useEffect(() => {
-    if (!isHoReCaAccount || !supabase) {
+    if (!hasDailyGiftAccess || !supabase) {
       setDailyPromo(null);
       return;
     }
@@ -51,7 +55,7 @@ export default function CartPage() {
       if (active) setDailyPromo(data?.play || null);
     });
     return () => { active = false; };
-  }, [isHoReCaAccount]);
+  }, [hasDailyGiftAccess]);
 
   const update = (event) => setForm((current) => ({
     ...current,
@@ -93,10 +97,13 @@ export default function CartPage() {
             whatsappOptIn,
             address: form.address.trim(),
             notes: form.notes.trim(),
-            total,
+            total: payableTotal,
             paymentMethod,
             isHoReCa: isHoReCaAccount,
-            cashbackRate: isHoReCaAccount ? effectiveCashbackRate : 0,
+            hasDailyReward: Boolean(dailyPromo),
+            cashbackRate: effectiveCashbackRate,
+            discountRate: dailyDiscountRate,
+            discountAmount,
             dailyGiftName: dailyGiftActive ? dailyPromo?.gift_name : "",
             iceGiftKg: totalIceGiftKg,
             items: items.map((item) => ({
@@ -141,12 +148,19 @@ export default function CartPage() {
           </div>
           <form className="checkout-card" onSubmit={submitOrder}>
             <h2>{t("orderSummary")}</h2>
-            <div className="checkout-total"><span>{t("total")}</span><b>{money(total, language)}</b></div>
-            {(isApprovedHoReCa || dailyGiftActive || dailyCashbackRate > 0) && (
+            {dailyDiscountRate > 0 && (
+              <>
+                <div className="checkout-total checkout-subtotal"><span>{t("total")}</span><b>{money(total, language)}</b></div>
+                <div className="checkout-discount"><span>Օրվա զեղչ՝ {dailyDiscountRate}%</span><b>−{money(discountAmount, language)}</b></div>
+              </>
+            )}
+            <div className="checkout-total"><span>{dailyDiscountRate > 0 ? "Վճարման ենթակա" : t("total")}</span><b>{money(payableTotal, language)}</b></div>
+            {(isApprovedHoReCa || dailyGiftActive || dailyCashbackRate > 0 || dailyDiscountRate > 0) && (
               <div className="checkout-horeca-benefits">
-                <b>{t("horecaOrderBenefits")}</b>
+                <b>{dailyDiscountRate > 0 ? "Քո օրվա շահումը" : t("horecaOrderBenefits")}</b>
                 {totalIceGiftKg > 0 && <span>+{totalIceGiftKg} kg {t("iceGift")}</span>}
                 {effectiveCashbackRate > 0 && <span>+{money(total * effectiveCashbackRate / 100, language)} {t("estimatedCashback")} ({effectiveCashbackRate}%)</span>}
+                {dailyDiscountRate > 0 && <span>−{money(discountAmount, language)} զեղչ</span>}
                 {dailyGiftActive && <span>🎁 {dailyPromo.gift_name} — 1 շիշ նվեր</span>}
               </div>
             )}

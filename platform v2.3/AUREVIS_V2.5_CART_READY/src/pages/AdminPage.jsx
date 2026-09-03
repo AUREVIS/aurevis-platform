@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  CalendarDays, Check, CircleDollarSign, History, PackageCheck,
+  CalendarDays, Check, CircleDollarSign, Gift, History, PackageCheck,
   MessageCircle, RefreshCw, ShieldCheck, ShoppingBag, TrendingUp, Users, X,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
@@ -28,7 +28,7 @@ export default function AdminPage() {
     setLoading(true);
     setError("");
     const [profilesResult, ordersResult, salesResult] = await Promise.all([
-      supabase.from("profiles").select("id, email, full_name, phone, account_type, company_name, role, horeca_status, loyalty_tier, created_at")
+      supabase.from("profiles").select("id, email, full_name, phone, account_type, company_name, role, horeca_status, loyalty_tier, daily_gift_access, created_at")
         .eq("is_archived", false)
         .order("created_at", { ascending: false }),
       supabase.from("orders").select(`
@@ -83,6 +83,16 @@ export default function AdminPage() {
     const { error: rpcError } = await supabase.rpc("admin_set_loyalty_tier", {
       target_user_id: userId,
       next_tier: tier,
+    });
+    if (rpcError) setError(rpcError.message);
+    else load();
+  }
+
+  async function setDailyGiftAccess(userId, enabled) {
+    setError("");
+    const { error: rpcError } = await supabase.rpc("admin_set_daily_gift_access", {
+      target_user_id: userId,
+      enabled,
     });
     if (rpcError) setError(rpcError.message);
     else load();
@@ -175,7 +185,7 @@ export default function AdminPage() {
 
         <div className="admin-table-wrap">
           <table className="admin-table">
-            <thead><tr><th>Հաճախորդ</th><th>Տեսակ</th><th>Կարգավիճակ</th><th>Մակարդակ</th><th>Wallet փոփոխություն</th><th>Գործողություն</th></tr></thead>
+            <thead><tr><th>Հաճախորդ</th><th>Տեսակ</th><th>Կարգավիճակ</th><th>Մակարդակ</th><th>Հատուկ խաղ</th><th>Wallet փոփոխություն</th><th>Գործողություն</th></tr></thead>
             <tbody>
               {profiles.map((item) => (
                 <tr key={item.id}>
@@ -194,6 +204,18 @@ export default function AdminPage() {
                         <option value="gold">Gold · 9%</option>
                       </select>
                     ) : "—"}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`daily-access-toggle ${item.daily_gift_access || item.account_type === "horeca" ? "enabled" : ""}`}
+                      disabled={item.account_type === "horeca" || item.role === "admin"}
+                      onClick={() => setDailyGiftAccess(item.id, !item.daily_gift_access)}
+                      title={item.account_type === "horeca" ? "HoReCa հաշվի համար միշտ միացված է" : "Տալ HoReCa Daily Gift-ի հատուկ կանոնները"}
+                    >
+                      <Gift size={16} />
+                      {item.account_type === "horeca" || item.daily_gift_access ? "Միացված" : "Միացնել"}
+                    </button>
                   </td>
                   <td>
                     <div className="wallet-adjust">
