@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CalendarDays, Check, CircleDollarSign, Gift, History, PackageCheck,
-  CreditCard, Eye, MapPin, MessageCircle, Phone, RefreshCw, ShieldCheck,
+  CreditCard, Eye, MapPin, MessageCircle, Pencil, Phone, RefreshCw, Search, ShieldCheck,
   ShoppingBag, TrendingUp, Users, X,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
@@ -13,6 +13,10 @@ export default function AdminPage() {
   const { profile, signOut } = useAuth();
   const [profiles, setProfiles] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [productDrafts, setProductDrafts] = useState({});
+  const [productSearch, setProductSearch] = useState("");
+  const [savingProductId, setSavingProductId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [walletInputs, setWalletInputs] = useState({});
@@ -29,7 +33,7 @@ export default function AdminPage() {
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
-    const [profilesResult, ordersResult, salesResult] = await Promise.all([
+    const [profilesResult, ordersResult, salesResult, productsResult] = await Promise.all([
       supabase.from("profiles").select("id, email, full_name, phone, account_type, company_name, role, horeca_status, loyalty_tier, daily_gift_access, created_at")
         .eq("is_archived", false)
         .order("created_at", { ascending: false }),
@@ -43,14 +47,24 @@ export default function AdminPage() {
         order_items(id, quantity, product_name, volume, unit_price)
       `).order("created_at", { ascending: false }).limit(200),
       supabase.rpc("admin_sales_summary"),
+      supabase.from("products").select(`
+        id, sku, name_hy, name_en, retail_price, discount_percent,
+        is_active, sort_order, categories(name_hy, name_en, slug)
+      `).order("sort_order", { ascending: true }),
     ]);
 
-    if (profilesResult.error || ordersResult.error || salesResult.error) {
-      setError(profilesResult.error?.message || ordersResult.error?.message || salesResult.error?.message || "Տվյալները չբեռնվեցին");
+    if (profilesResult.error || ordersResult.error || salesResult.error || productsResult.error) {
+      setError(profilesResult.error?.message || ordersResult.error?.message || salesResult.error?.message || productsResult.error?.message || "Տվյալները չբեռնվեցին");
     } else {
       setProfiles(profilesResult.data || []);
       setOrders(ordersResult.data || []);
       setSales((current) => ({ ...current, ...(salesResult.data || {}) }));
+      setProducts(productsResult.data || []);
+      setProductDrafts(Object.fromEntries((productsResult.data || []).map((item) => [item.id, {
+        price: Number(item.retail_price || 0),
+        discount: Number(item.discount_percent || 0),
+        active: Boolean(item.is_active),
+      }])));
     }
     setLoading(false);
   }, []);
@@ -127,6 +141,41 @@ export default function AdminPage() {
     else load();
   }
 
+  const visibleAdminProducts = useMemo(() => {
+    const search = productSearch.toLowerCase().trim();
+    if (!search) return products;
+    return products.filter((item) => `${item.name_hy || ""} ${item.name_en || ""} ${item.sku || ""}`.toLowerCase().includes(search));
+  }, [products, productSearch]);
+
+  function updateProductDraft(productId, field, value) {
+    setProductDrafts((current) => ({
+      ...current,
+      [productId]: { ...current[productId], [field]: value },
+    }));
+  }
+
+  async function saveProduct(productId) {
+    const draft = productDrafts[productId];
+    if (!draft) return;
+    const price = Number(draft.price);
+    const discount = Number(draft.discount);
+    if (!Number.isFinite(price) || price < 0 || !Number.isFinite(discount) || discount < 0 || discount > 100) {
+      setError("Գինը պետք է լինի 0-ից բարձր, իսկ զեղչը՝ 0–100%։");
+      return;
+    }
+    setSavingProductId(productId);
+    setError("");
+    const { error: rpcError } = await supabase.rpc("admin_update_catalog_product", {
+      target_product_id: productId,
+      new_retail_price: price,
+      new_discount_percent: discount,
+      new_is_active: Boolean(draft.active),
+    });
+    setSavingProductId(null);
+    if (rpcError) setError(rpcError.message);
+    else load();
+  }
+
   const orderItemsCount = (order) => (order.order_items || [])
     .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 
@@ -188,6 +237,39 @@ export default function AdminPage() {
       </div>
 
       {error && <p className="admin-error">V2.4 database setup-ը ստուգիր․ {error}</p>}
+
+      <div className="admin-panel admin-products-panel">
+        <div className="section-title admin-section-title admin-products-title">
+          <div><p className="eyebrow">CATALOG CONTROL</p><h2><Pencil size={25} /> Ապրանքների կառավարում</h2></div>
+          <span>{products.length}</span>
+        </div>
+
+        <label className="admin-product-search">
+          <Search size={18} />
+          <input value={productSearch} onChange={(event) => setProductSearch(event.target.value)} placeholder="Փնտրել ապրանքը կամ SKU-ն" />
+        </label>
+
+        <div className="admin-products-list">
+          {visibleAdminProducts.map((item) => {
+            const draft = productDrafts[item.id] || {};
+            const salePrice = Math.round(Number(draft.price || 0) * (100 - Number(draft.discount || 0)) / 100);
+            return (
+              <article key={item.id} className={!draft.active ? "inactive" : ""}>
+                <div className="admin-product-name">
+                  <small>{item.categories?.name_hy || item.categories?.slug || "AUREVIS"}</small>
+                  <b>{item.name_hy || item.name_en}</b>
+                  <span>{item.sku}</span>
+                </div>
+                <label><span>Հիմնական գին</span><input type="number" min="0" step="100" value={draft.price ?? ""} onChange={(event) => updateProductDraft(item.id, "price", event.target.value)} /></label>
+                <label><span>Զեղչ %</span><input type="number" min="0" max="100" value={draft.discount ?? ""} onChange={(event) => updateProductDraft(item.id, "discount", event.target.value)} /></label>
+                <div className="admin-product-final-price"><span>Վաճառքի գին</span><b>{money(salePrice)}</b></div>
+                <label className="admin-product-active"><input type="checkbox" checked={Boolean(draft.active)} onChange={(event) => updateProductDraft(item.id, "active", event.target.checked)} /><span>{draft.active ? "Ցուցադրվում է" : "Թաքցված է"}</span></label>
+                <button type="button" onClick={() => saveProduct(item.id)} disabled={savingProductId === item.id}>{savingProductId === item.id ? "Պահվում է…" : "Պահել"}</button>
+              </article>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="admin-panel">
         <div className="section-title admin-section-title">
