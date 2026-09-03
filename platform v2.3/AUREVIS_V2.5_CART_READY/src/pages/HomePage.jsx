@@ -216,6 +216,7 @@ export default function HomePage() {
                   to="/catalog"
                 >
                   <span>{t("bestSellerBadge")}</span>
+                  {product.discountPercent > 0 && <b className="home-sale-badge">−{product.discountPercent}%</b>}
                   <img src={product.featuredImage} alt={product.name} loading="lazy" />
                 </Link>
                 <div className="home-best-info">
@@ -223,7 +224,10 @@ export default function HomePage() {
                   <h3>{language === "hy" && product.nameHy ? product.nameHy : product.name}</h3>
                   <p>{product.volume || (product.category?.includes("puree") ? "1 L" : "700 ml")}</p>
                   <div>
-                    <b>{money(product.price, language)}</b>
+                    <span className="catalog-promo-price home-promo-price">
+                      {product.originalPrice && <del>{money(product.originalPrice, language)}</del>}
+                      <b>{money(product.price, language)}</b>
+                    </span>
                     <button type="button" onClick={() => addFeatured(product)}>
                       <ShoppingBag size={17} />
                       {addedId === product.id ? t("added") : t("add")}

@@ -8,21 +8,23 @@ import {
 } from "lucide-react";
 import { getCatalogProducts } from "../lib/catalog";
 import { useCart } from "../context/CartContext";
+import { useLanguage } from "../context/LanguageContext";
 
-const money = (value) =>
-  new Intl.NumberFormat("hy-AM").format(Number(value || 0)) + " ֏";
+const money = (value, language = "hy") =>
+  new Intl.NumberFormat({ hy: "hy-AM", ru: "ru-RU", en: "en-US", ka: "ka-GE" }[language] || "hy-AM")
+    .format(Number(value || 0)) + " ֏";
 
 const categoryLabels = {
-  syrups: "Օշարակներ",
-  syrup: "Օշարակներ",
-  purees: "Պյուրեներ",
-  puree: "Պյուրեներ",
-  bakery: "Խմորեղեն",
-  desserts: "Դեսերտներ",
-  bread: "Հաց",
-  equipment: "Սարքավորումներ",
-  "bar-tools": "Բար գործիքներ",
-  other: "Այլ ապրանքներ",
+  syrups: "categorySyrups",
+  syrup: "categorySyrups",
+  purees: "categoryPurees",
+  puree: "categoryPurees",
+  bakery: "categoryBakery",
+  desserts: "categoryDesserts",
+  bread: "categoryBread",
+  equipment: "categoryEquipment",
+  "bar-tools": "categoryBarTools",
+  other: "categoryOther",
 };
 
 const syrupImages = [
@@ -274,6 +276,7 @@ function ProductVisual({ product, modal = false }) {
 
 export default function CatalogPage() {
   const { addItem } = useCart();
+  const { language, t } = useLanguage();
 
   const [addedId, setAddedId] = useState(null);
   const [query, setQuery] = useState("");
@@ -391,11 +394,10 @@ export default function CatalogPage() {
             AUREVIS CATALOG
           </p>
 
-          <h1>Պրոֆեսիոնալ կատալոգ</h1>
+          <h1>{t("catalogTitle")}</h1>
 
           <p>
-            Պրեմիում օշարակներ, մրգային պյուրեներ և
-            HoReCa լուծումներ՝ մեկ վայրում։
+            {t("catalogLead")}
           </p>
         </div>
       </div>
@@ -409,7 +411,7 @@ export default function CatalogPage() {
             onChange={(event) =>
               setQuery(event.target.value)
             }
-            placeholder="Փնտրել՝ Mojito, Vanilla, Raspberry..."
+            placeholder={t("searchPlaceholder")}
           />
         </label>
 
@@ -424,8 +426,8 @@ export default function CatalogPage() {
               onClick={() => setCategory(item)}
             >
               {item === "all"
-                ? "Բոլորը"
-                : categoryLabels[item] || item}
+                ? t("all")
+                : categoryLabels[item] ? t(categoryLabels[item]) : item}
             </button>
           ))}
         </div>
@@ -433,8 +435,8 @@ export default function CatalogPage() {
 
       <div className="catalog-count">
         {loading
-          ? "Բեռնվում է..."
-          : `${visible.length} ապրանք`}
+          ? t("loading")
+          : `${visible.length} ${t("product")}`}
       </div>
 
       <div className="product-grid">
@@ -459,13 +461,16 @@ export default function CatalogPage() {
                   product.accent || "#c59a42",
               }}
             >
+              {product.discountPercent > 0 && (
+                <span className="catalog-sale-badge">−{product.discountPercent}%</span>
+              )}
               <ProductVisual product={product} />
             </div>
 
             <div>
               <span>
                 {product.categoryName ||
-                  categoryLabels[product.category] ||
+                  (categoryLabels[product.category] ? t(categoryLabels[product.category]) : null) ||
                   product.category ||
                   "AUREVIS"}
               </span>
@@ -496,7 +501,10 @@ export default function CatalogPage() {
               </div>
 
               <div className="price-row">
-                <b>{money(product.price)}</b>
+                <div className="catalog-promo-price">
+                  {product.originalPrice && <del>{money(product.originalPrice, language)}</del>}
+                  <b>{money(product.price, language)}</b>
+                </div>
 
                 <button
                   type="button"
@@ -506,13 +514,13 @@ export default function CatalogPage() {
                   }}
                 >
                   {addedId === product.id
-                    ? "Ավելացված է ✓"
-                    : "+ Ավելացնել"}
+                    ? t("added")
+                    : t("add")}
                 </button>
               </div>
 
               <span className="catalog-details-hint">
-                Սեղմել՝ մանրամասները տեսնելու համար
+                {t("details")}
               </span>
             </div>
           </article>
@@ -538,7 +546,7 @@ export default function CatalogPage() {
             <button
               type="button"
               className="catalog-modal-close"
-              aria-label="Փակել"
+              aria-label={t("close")}
               onClick={() => setSelectedProduct(null)}
             >
               <X size={22} />
@@ -551,6 +559,9 @@ export default function CatalogPage() {
                   selectedProduct.accent || "#c59a42",
               }}
             >
+              {selectedProduct.discountPercent > 0 && (
+                <span className="catalog-sale-badge modal-sale-badge">−{selectedProduct.discountPercent}%</span>
+              )}
               <ProductVisual
                 product={selectedProduct}
                 modal
@@ -560,7 +571,7 @@ export default function CatalogPage() {
             <div className="catalog-modal-content">
               <p className="catalog-modal-category">
                 {selectedProduct.categoryName ||
-                  categoryLabels[selectedProduct.category] ||
+                  (categoryLabels[selectedProduct.category] ? t(categoryLabels[selectedProduct.category]) : null) ||
                   selectedProduct.category ||
                   "AUREVIS"}
               </p>
@@ -578,18 +589,21 @@ export default function CatalogPage() {
 
               <p className="catalog-modal-description">
                 {selectedProduct.description ||
-                  "Պրոֆեսիոնալ AUREVIS արտադրանք՝ սրճարանների, ռեստորանների և HoReCa նախագծերի համար։"}
+                  t("productDescription")}
               </p>
 
               <div className="catalog-modal-information">
                 <span>
-                  Ծավալ
+                  {t("volume")}
                   <b>{selectedProduct.volume || "1 լիտր"}</b>
                 </span>
 
                 <span>
-                  Գին
-                  <b>{money(selectedProduct.price)}</b>
+                  {t("price")}
+                  <span className="catalog-promo-price modal-promo-price">
+                    {selectedProduct.originalPrice && <del>{money(selectedProduct.originalPrice, language)}</del>}
+                    <b>{money(selectedProduct.price, language)}</b>
+                  </span>
                 </span>
               </div>
 
@@ -610,11 +624,11 @@ export default function CatalogPage() {
               <div className="catalog-modal-order-row">
                 <div
                   className="catalog-quantity-control"
-                  aria-label="Քանակ"
+                  aria-label={t("quantity")}
                 >
                   <button
                     type="button"
-                    aria-label="Պակասեցնել"
+                    aria-label={t("decrease")}
                     onClick={() =>
                       setQuantity((current) =>
                         Math.max(1, current - 1)
@@ -628,7 +642,7 @@ export default function CatalogPage() {
 
                   <button
                     type="button"
-                    aria-label="Ավելացնել"
+                    aria-label={t("add")}
                     onClick={() =>
                       setQuantity((current) => current + 1)
                     }
@@ -643,11 +657,12 @@ export default function CatalogPage() {
                   onClick={addSelectedProduct}
                 >
                   <ShoppingBag size={19} />
-                  Ավելացնել զամբյուղ
+                  {t("addToCart")}
                   <b>
                     {money(
                       Number(selectedProduct.price || 0) *
-                        quantity
+                        quantity,
+                      language
                     )}
                   </b>
                 </button>
@@ -659,10 +674,10 @@ export default function CatalogPage() {
 
       {!loading && !visible.length && (
         <div className="empty-state">
-          <h2>Ապրանք չի գտնվել</h2>
+          <h2>{t("noProducts")}</h2>
 
           <p>
-            Փոխիր որոնման բառը կամ ընտրիր այլ բաժին։
+            {t("changeSearch")}
           </p>
         </div>
       )}<div className="catalog-contact-section">
