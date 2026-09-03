@@ -46,6 +46,13 @@ export default async (request) => {
       ]
     : [];
 
+  const paymentLabels = {
+    cash: "Կանխիկ՝ առաքման պահին",
+    card: "Քարտով՝ առաքման պահին",
+    transfer: "Փոխանցումով / հետվճարով",
+  };
+  const paymentMethod = paymentLabels[payload?.paymentMethod] || paymentLabels.cash;
+
   const text = [
     "🛍 ՆՈՐ ՊԱՏՎԵՐ — AUREVIS",
     `Պատվեր՝ #${clean(payload.orderNumber)}`,
@@ -58,6 +65,7 @@ export default async (request) => {
     ...itemLines,
     "",
     `💳 Ընդհանուր՝ ${money(payload.total)}`,
+    `💵 Վճարում՝ ${paymentMethod}`,
     `📝 Նշում՝ ${clean(payload.notes)}`,
     ...benefitLines,
   ].join("\n").slice(0, 4096);
