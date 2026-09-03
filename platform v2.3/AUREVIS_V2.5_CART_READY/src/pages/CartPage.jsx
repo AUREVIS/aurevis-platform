@@ -13,6 +13,7 @@ export default function CartPage() {
   const { items, total, setQuantity, removeItem, clearCart } = useCart();
   const { user, profile } = useAuth();
   const [form, setForm] = useState({ phone: profile?.phone || "", address: "", notes: "" });
+  const [paymentMethod, setPaymentMethod] = useState("cash");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -40,6 +41,7 @@ export default function CartPage() {
         sku: item.sku || null,
         name: item.name,
         quantity: item.quantity,
+        payment_method: paymentMethod,
       })),
     });
     if (orderError) setError(`Պատվերը չպահպանվեց․ ${orderError.message}`);
@@ -57,6 +59,7 @@ export default function CartPage() {
             address: form.address.trim(),
             notes: form.notes.trim(),
             total,
+            paymentMethod,
             isHoReCa: isApprovedHoReCa,
             cashbackRate: isApprovedHoReCa ? cashbackRate : 0,
             iceGiftKg: isApprovedHoReCa ? eligibleBottleCount * 5 : 0,
@@ -113,6 +116,17 @@ export default function CartPage() {
             {!user && <p className="form-message error"><Link to="/account">{t("signInToOrder")}</Link></p>}
             <label>{t("phone")}<input required name="phone" value={form.phone} onChange={update} placeholder="+374…" /></label>
             <label>{t("address")}<input required name="address" value={form.address} onChange={update} /></label>
+            <label>
+              {t("paymentMethod")}
+              <select value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)}>
+                <option value="cash">{t("payCash")}</option>
+                <option value="card">{t("payCard")}</option>
+                {isApprovedHoReCa && <option value="transfer">{t("payTransfer")}</option>}
+              </select>
+            </label>
+            {isApprovedHoReCa && paymentMethod === "transfer" && (
+              <p className="payment-hint">{t("transferHint")}</p>
+            )}
             <label>{t("note")}<textarea name="notes" value={form.notes} onChange={update} rows="3" /></label>
             {error && <p className="form-message error">{error}</p>}
             {success && <p className="form-message success">{success}</p>}
