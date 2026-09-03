@@ -9,6 +9,7 @@ import {
 import { getCatalogProducts } from "../lib/catalog";
 import { useCart } from "../context/CartContext";
 import { useLanguage } from "../context/LanguageContext";
+import { Link } from "react-router-dom";
 
 const money = (value, language = "hy") =>
   new Intl.NumberFormat({ hy: "hy-AM", ru: "ru-RU", en: "en-US", ka: "ka-GE" }[language] || "hy-AM")
@@ -166,7 +167,7 @@ const normalizeText = (value = "") =>
 const containsPhrase = (text, phrase) =>
   ` ${text} `.includes(` ${normalizeText(phrase)} `);
 
-function getCatalogImage(product) {
+export function getCatalogImage(product) {
   const productText = normalizeText(
     `${product.name || ""} ${product.nameHy || ""}`
   );
@@ -374,9 +375,7 @@ export default function CatalogPage() {
   }
 
   function addSelectedProduct() {
-    for (let index = 0; index < quantity; index += 1) {
-      addItem(selectedProduct);
-    }
+    addItem(selectedProduct, quantity);
 
     setAddedId(selectedProduct.id);
     setSelectedProduct(null);
@@ -667,6 +666,9 @@ export default function CatalogPage() {
                   </b>
                 </button>
               </div>
+              <Link className="catalog-full-product-link" to={`/product/${selectedProduct.id}`} onClick={() => setSelectedProduct(null)}>
+                Տեսնել ապրանքի ամբողջական էջը
+              </Link>
             </div>
           </article>
         </div>
