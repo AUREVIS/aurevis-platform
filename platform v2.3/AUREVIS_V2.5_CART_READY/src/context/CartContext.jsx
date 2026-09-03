@@ -17,12 +17,13 @@ export function CartProvider({ children }) {
     items,
     count: items.reduce((sum, item) => sum + item.quantity, 0),
     total: items.reduce((sum, item) => sum + Number(item.price || 0) * item.quantity, 0),
-    addItem(product) {
+    addItem(product, amount = 1) {
+      const addQuantity = Math.max(1, Number(amount || 1));
       setItems((current) => {
         const existing = current.find((item) => item.id === product.id);
         if (existing) return current.map((item) => item.id === product.id
-          ? { ...item, ...applyCatalogPromotion(product), quantity: item.quantity + 1 } : item);
-        return [...current, { ...applyCatalogPromotion(product), quantity: 1 }];
+          ? { ...item, ...applyCatalogPromotion(product), quantity: item.quantity + addQuantity } : item);
+        return [...current, { ...applyCatalogPromotion(product), quantity: addQuantity }];
       });
     },
     setQuantity(id, quantity) {
