@@ -9,6 +9,18 @@
   font-size: 0.82rem;
 }
 
+.checkout-phone-hint {
+  color: #6d7a75;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.checkout-card input[readonly] {
+  background: #f2eee5;
+  color: #40504a;
+}
+
 /* WhatsApp order updates */
 .checkout-card .whatsapp-consent {
   display: flex;
