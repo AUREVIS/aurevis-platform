@@ -3165,6 +3165,10 @@ img.modal-product-image {
 }
 
 .catalog-promo-price b {
+  color: inherit;
+}
+
+.catalog-promo-price:has(del) b {
   color: #b52323;
 }
 
