@@ -37,13 +37,14 @@ export default async (request) => {
     return `${index + 1}. ${clean(item?.name)}${volume ? ` (${volume})` : ""} × ${quantity} — ${money(price * quantity)}`;
   });
 
-  const benefitLines = payload?.isHoReCa || payload?.hasDailyGiftAccess
+  const benefitLines = payload?.isHoReCa || payload?.hasDailyReward
     ? [
         "",
         payload?.isHoReCa ? "🏢 HoReCa պատվեր" : "🎯 Daily Gift հաճախորդ",
         ...(payload?.dailyGiftName ? [`🏆 Օրվա նվեր՝ ${clean(payload.dailyGiftName)} — 1 շիշ`] : []),
-        `🎁 Սառույցի նվեր՝ ${Math.max(0, Number(payload?.iceGiftKg || 0))} կգ`,
-        `💰 Cashback՝ ${Math.max(0, Number(payload?.cashbackRate || 0))}%`,
+        ...(Number(payload?.discountRate || 0) > 0 ? [`🏷 Օրվա զեղչ՝ ${Number(payload.discountRate)}% (−${money(payload.discountAmount)})`] : []),
+        ...(Number(payload?.iceGiftKg || 0) > 0 ? [`🎁 Սառույցի նվեր՝ ${Number(payload.iceGiftKg)} կգ`] : []),
+        ...(Number(payload?.cashbackRate || 0) > 0 ? [`💰 Cashback՝ ${Number(payload.cashbackRate)}%`] : []),
       ]
     : [];
 
