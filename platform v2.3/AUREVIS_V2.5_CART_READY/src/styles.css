@@ -3,6 +3,27 @@
   color:#08251c;background:#f7f2e8;font-synthesis:none
 }
 
+/* Checkout payment methods */
+.checkout-card select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d8c8ab;
+  border-radius: 12px;
+  background: #fff;
+  color: #08251c;
+  font: inherit;
+}
+
+.payment-hint {
+  margin: -6px 0 14px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: #f7efd9;
+  color: #705718;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
 /* AUREVIS HoReCa benefits and language selector */
 .language-picker{
   display:flex;
