@@ -25,7 +25,7 @@ const copy = {
     play: "Փորձել բախտը", playing: "Ընտրում ենք քո անակնկալը…", already: "Այսօրվա փորձն արդեն օգտագործել ես",
     gift: "Դու շահեցիր մեկ շիշ", cashback: "Այսօրվա cashback", both: "Երկու նվեր միանգամից", none: "Այսօր չշահեցիր, բայց վաղը նոր փորձ կունենաս։",
     valid: "Կիրառվում է ավտոմատ՝ այսօր կատարած առաջին պատվերի ժամանակ։", catalog: "Ընտրել ապրանքներ", account: "Իմ հաշիվը",
-    unavailable: "Այս բաժինը հասանելի է միայն հաստատված HoReCa գործընկերներին։", error: "Չհաջողվեց բացել խաղը։ Փորձիր կրկին։",
+    unavailable: "Այս բաժինը հասանելի է HoReCa տեսակի հաշվով գրանցված հաճախորդներին։", error: "Չհաջողվեց բացել խաղը։ Փորձիր կրկին։",
   },
   ru: {
     eyebrow: "AUREVIS HORECA DAILY GIFT", title: "Сегодняшний сюрприз ждёт вас",
@@ -33,7 +33,7 @@ const copy = {
     play: "Испытать удачу", playing: "Выбираем ваш сюрприз…", already: "Сегодняшняя попытка уже использована",
     gift: "Вы выиграли одну бутылку", cashback: "Cashback на сегодня", both: "Сразу два подарка", none: "Сегодня без выигрыша — новая попытка будет завтра.",
     valid: "Применится автоматически к первому заказу, оформленному сегодня.", catalog: "Выбрать товары", account: "Мой аккаунт",
-    unavailable: "Раздел доступен только подтверждённым HoReCa-партнёрам.", error: "Не удалось открыть игру. Попробуйте ещё раз.",
+    unavailable: "Раздел доступен клиентам, зарегистрированным с типом аккаунта HoReCa.", error: "Не удалось открыть игру. Попробуйте ещё раз.",
   },
   en: {
     eyebrow: "AUREVIS HORECA DAILY GIFT", title: "Today's surprise is waiting for you",
@@ -41,7 +41,7 @@ const copy = {
     play: "Try your luck", playing: "Choosing your surprise…", already: "You have already used today's try",
     gift: "You won one bottle", cashback: "Today's cashback", both: "Two rewards at once", none: "No reward today, but you can try again tomorrow.",
     valid: "Applied automatically to the first order you place today.", catalog: "Choose products", account: "My account",
-    unavailable: "This area is only available to approved HoReCa partners.", error: "The game could not be opened. Please try again.",
+    unavailable: "This area is available to customers registered with a HoReCa account.", error: "The game could not be opened. Please try again.",
   },
   ka: {
     eyebrow: "AUREVIS HORECA DAILY GIFT", title: "დღევანდელი სიურპრიზი გელოდებათ",
@@ -49,7 +49,7 @@ const copy = {
     play: "სცადეთ ბედი", playing: "ვარჩევთ თქვენს სიურპრიზს…", already: "დღევანდელი ცდა უკვე გამოიყენეთ",
     gift: "თქვენ მოიგეთ ერთი ბოთლი", cashback: "დღევანდელი cashback", both: "ორი საჩუქარი ერთად", none: "დღეს ვერ მოიგეთ — ხვალ ახალი ცდა გექნებათ.",
     valid: "ავტომატურად დაემატება დღეს გაკეთებულ პირველ შეკვეთას.", catalog: "პროდუქტების არჩევა", account: "ჩემი ანგარიში",
-    unavailable: "ეს გვერდი მხოლოდ დადასტურებული HoReCa პარტნიორებისთვისაა.", error: "თამაშის გახსნა ვერ მოხერხდა. სცადეთ თავიდან.",
+    unavailable: "ეს გვერდი ხელმისაწვდომია HoReCa ანგარიშით რეგისტრირებული მომხმარებლებისთვის.", error: "თამაშის გახსნა ვერ მოხერხდა. სცადეთ თავიდან.",
   },
 };
 
@@ -69,7 +69,7 @@ export default function HoReCaDailyGiftPage() {
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState("");
 
-  const approved = profile?.account_type === "horeca" && profile?.horeca_status === "approved";
+  const isHoReCa = profile?.account_type === "horeca";
   const play = status?.play || null;
   const resultTitle = useMemo(() => {
     if (!play) return "";
@@ -80,7 +80,7 @@ export default function HoReCaDailyGiftPage() {
   }, [play, text]);
 
   useEffect(() => {
-    if (!user || !approved || !supabase) return;
+    if (!user || !isHoReCa || !supabase) return;
     let active = true;
     supabase.rpc("get_horeca_daily_gift_status").then(({ data, error: requestError }) => {
       if (!active) return;
@@ -88,7 +88,7 @@ export default function HoReCaDailyGiftPage() {
       else setStatus(data);
     });
     return () => { active = false; };
-  }, [user, approved, text.error]);
+  }, [user, isHoReCa, text.error]);
 
   async function playNow() {
     if (spinning || status?.played) return;
@@ -112,11 +112,11 @@ export default function HoReCaDailyGiftPage() {
       <div className="daily-gift-shell">
         <div className="daily-gift-heading">
           <p className="eyebrow">{text.eyebrow}</p>
-          <h1>{approved ? text.title : text.unavailable}</h1>
-          {approved && <p>{status?.played ? text.already : text.lead}</p>}
+          <h1>{isHoReCa ? text.title : text.unavailable}</h1>
+          {isHoReCa && <p>{status?.played ? text.already : text.lead}</p>}
         </div>
 
-        {approved && (
+        {isHoReCa && (
           <div className={`daily-gift-stage ${spinning ? "is-spinning" : ""} ${play ? "has-result" : ""}`}>
             {!play && (
               <div className="daily-bottle-wheel" aria-hidden="true">
@@ -174,7 +174,7 @@ export default function HoReCaDailyGiftPage() {
         )}
 
         {error && <p className="form-message error daily-gift-error">{error}</p>}
-        {!approved && <Link className="submit-button daily-back-link" to="/account">{text.account}</Link>}
+        {!isHoReCa && <Link className="submit-button daily-back-link" to="/account">{text.account}</Link>}
       </div>
     </section>
   );
