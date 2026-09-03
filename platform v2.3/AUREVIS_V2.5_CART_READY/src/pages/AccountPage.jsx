@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { BadgeCheck, Building2, Clock3, History, LogOut, WalletCards } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { BadgeCheck, Building2, Clock3, Gift, History, LogOut, Snowflake, Trophy, WalletCards } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 
 const money = (value) => `${new Intl.NumberFormat("hy-AM").format(Number(value || 0))} ֏`;
 
@@ -129,6 +130,7 @@ function AuthForm() {
 export default function AccountPage() {
   const location = useLocation();
   const { loading, user, profile, profileError, signOut } = useAuth();
+  const { t } = useLanguage();
   const [wallet, setWallet] = useState(null);
   const [orders, setOrders] = useState([]);
   const [dataError, setDataError] = useState("");
@@ -151,13 +153,29 @@ export default function AccountPage() {
       }
     });
 
-    return () => { active = false; };
+    const intervalId = window.setInterval(async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("id, order_number, status, total_amount, cashback_earned, created_at, updated_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (active && !error) setOrders(data || []);
+    }, 30000);
+
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+    };
   }, [user]);
 
   if (loading) return <div className="route-loader">Հաշիվը բեռնվում է…</div>;
 
   const activeOrders = orders.filter((order) => !["completed", "cancelled"].includes(order.status));
   const orderHistory = orders.filter((order) => ["completed", "cancelled"].includes(order.status));
+  const loyaltyTier = String(profile?.loyalty_tier || "bronze").toLowerCase();
+  const tierRates = { bronze: 5, silver: 7, gold: 9 };
 
   const renderOrders = (list) => (
     <div className="order-list">
@@ -223,11 +241,42 @@ export default function AccountPage() {
             </article>
           </div>
 
+          {profile?.account_type === "horeca" && (
+            <section className={`horeca-bonus-panel ${profile?.horeca_status === "approved" ? "approved" : "pending"}`}>
+              <div className="horeca-bonus-heading">
+                <div>
+                  <p className="eyebrow dark">AUREVIS HORECA</p>
+                  <h2>{t("myBonuses")}</h2>
+                </div>
+                {profile?.horeca_status === "approved" && (
+                  <div className="current-tier-badge">
+                    <Trophy size={20} />
+                    <span>{t(loyaltyTier)}</span>
+                    <b>{tierRates[loyaltyTier] || 5}%</b>
+                  </div>
+                )}
+              </div>
+
+              {profile?.horeca_status === "approved" ? (
+                <div className="account-benefit-grid">
+                  <article><Snowflake /><b>{t("iceTitle")}</b><span>{t("iceText")}</span></article>
+                  <article><WalletCards /><b>{tierRates[loyaltyTier] || 5}% {t("cashback")}</b><span>{t("cashbackText")}</span></article>
+                  <article><Gift /><b>{t("giftsTitle")}</b><span>{t("equipmentText")}</span></article>
+                </div>
+              ) : (
+                <p>{t("eligibility")}</p>
+              )}
+
+              <Link to="/horeca-benefits">{t("learnBenefits")}</Link>
+            </section>
+          )}
+
           <div className="account-section">
             <div className="section-title">
               <div><p className="eyebrow dark">ACTIVE ORDERS</p><h2><Clock3 size={25} /> Ակտիվ պատվերներ</h2></div>
               <span>{activeOrders.length} պատվեր</span>
             </div>
+            <p className="account-status-note">Կարգավիճակը թարմացվում է ավտոմատ՝ առանց էջը վերաբեռնելու։</p>
             {activeOrders.length ? renderOrders(activeOrders) : (
               <div className="empty-state compact">
                 <h3>Ակտիվ պատվեր չկա</h3>
