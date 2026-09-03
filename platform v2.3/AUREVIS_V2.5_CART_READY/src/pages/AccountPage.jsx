@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BadgeCheck, Building2, Clock3, Gift, History, LogOut, Snowflake, Trophy, WalletCards } from "lucide-react";
+import { BadgeCheck, Building2, Clock3, Gift, History, LogOut, Snowflake, Sparkles, Trophy, WalletCards } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
@@ -258,11 +258,17 @@ export default function AccountPage() {
               </div>
 
               {profile?.horeca_status === "approved" ? (
-                <div className="account-benefit-grid">
-                  <article><Snowflake /><b>{t("iceTitle")}</b><span>{t("iceText")}</span></article>
-                  <article><WalletCards /><b>{tierRates[loyaltyTier] || 5}% {t("cashback")}</b><span>{t("cashbackText")}</span></article>
-                  <article><Gift /><b>{t("giftsTitle")}</b><span>{t("equipmentText")}</span></article>
-                </div>
+                <>
+                  <Link className="daily-gift-account-link" to="/horeca-daily-gift">
+                    <Sparkles />
+                    <span><b>Օրվա անակնկալ</b><small>Շահիր շիշ կամ մինչև 12% cashback</small></span>
+                  </Link>
+                  <div className="account-benefit-grid">
+                    <article><Snowflake /><b>{t("iceTitle")}</b><span>{t("iceText")}</span></article>
+                    <article><WalletCards /><b>{tierRates[loyaltyTier] || 5}% {t("cashback")}</b><span>{t("cashbackText")}</span></article>
+                    <article><Gift /><b>{t("giftsTitle")}</b><span>{t("equipmentText")}</span></article>
+                  </div>
+                </>
               ) : (
                 <p>{t("eligibility")}</p>
               )}

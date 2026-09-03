@@ -22,10 +22,14 @@ export default function CartPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [dailyPromo, setDailyPromo] = useState(null);
 
   const isApprovedHoReCa = profile?.account_type === "horeca" && profile?.horeca_status === "approved";
   const tierRates = { bronze: 5, silver: 7, gold: 9 };
   const cashbackRate = tierRates[String(profile?.loyalty_tier || "bronze").toLowerCase()] || 5;
+  const dailyCashbackRate = dailyPromo && !dailyPromo.cashback_redeemed ? Number(dailyPromo.cashback_rate || 0) : 0;
+  const effectiveCashbackRate = Math.max(cashbackRate, dailyCashbackRate);
+  const dailyGiftActive = Boolean(dailyPromo?.gift_won && !dailyPromo?.gift_redeemed);
   const eligibleBottleCount = items
     .filter((item) => ["syrup", "syrups", "puree", "purees"].includes(String(item.category || "").toLowerCase()))
     .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
@@ -34,6 +38,18 @@ export default function CartPage() {
     if (!profile?.phone) return;
     setForm((current) => ({ ...current, phone: profile.phone }));
   }, [profile?.phone]);
+
+  useEffect(() => {
+    if (!isApprovedHoReCa || !supabase) {
+      setDailyPromo(null);
+      return;
+    }
+    let active = true;
+    supabase.rpc("get_horeca_daily_gift_status").then(({ data }) => {
+      if (active) setDailyPromo(data?.play || null);
+    });
+    return () => { active = false; };
+  }, [isApprovedHoReCa]);
 
   const update = (event) => setForm((current) => ({
     ...current,
@@ -78,8 +94,9 @@ export default function CartPage() {
             total,
             paymentMethod,
             isHoReCa: isApprovedHoReCa,
-            cashbackRate: isApprovedHoReCa ? cashbackRate : 0,
-            iceGiftKg: isApprovedHoReCa ? eligibleBottleCount * 5 : 0,
+            cashbackRate: isApprovedHoReCa ? effectiveCashbackRate : 0,
+            dailyGiftName: dailyGiftActive ? dailyPromo?.gift_name : "",
+            iceGiftKg: isApprovedHoReCa ? (eligibleBottleCount + (dailyGiftActive ? 1 : 0)) * 5 : 0,
             items: items.map((item) => ({
               name: item.name,
               volume: item.volume || "",
@@ -126,8 +143,9 @@ export default function CartPage() {
             {isApprovedHoReCa && (
               <div className="checkout-horeca-benefits">
                 <b>{t("horecaOrderBenefits")}</b>
-                <span>+{eligibleBottleCount * 5} kg {t("iceGift")}</span>
-                <span>+{money(total * cashbackRate / 100, language)} {t("estimatedCashback")}</span>
+                <span>+{(eligibleBottleCount + (dailyGiftActive ? 1 : 0)) * 5} kg {t("iceGift")}</span>
+                <span>+{money(total * effectiveCashbackRate / 100, language)} {t("estimatedCashback")} ({effectiveCashbackRate}%)</span>
+                {dailyGiftActive && <span>🎁 {dailyPromo.gift_name} — 1 շիշ նվեր</span>}
               </div>
             )}
             {!user && <p className="form-message error"><Link to="/account">{t("signInToOrder")}</Link></p>}
