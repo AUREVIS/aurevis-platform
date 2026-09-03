@@ -32,7 +32,7 @@ function DailyGiftGate() {
 
   useEffect(() => {
     if (loading || !user || !supabase) return;
-    if (profile?.account_type !== "horeca" || profile?.horeca_status !== "approved") return;
+    if (profile?.account_type !== "horeca") return;
     if (location.pathname === "/horeca-daily-gift" || location.pathname.startsWith("/admin")) return;
 
     let active = true;
@@ -44,7 +44,7 @@ function DailyGiftGate() {
     });
 
     return () => { active = false; };
-  }, [loading, user, profile?.account_type, profile?.horeca_status, location.pathname, navigate]);
+  }, [loading, user, profile?.account_type, location.pathname, navigate]);
 
   return null;
 }
