@@ -30,6 +30,12 @@ export function CartProvider({ children }) {
       setItems((current) => current.map((item) => item.id === id ? { ...item, quantity } : item));
     },
     removeItem(id) { setItems((current) => current.filter((item) => item.id !== id)); },
+    replaceItems(products) {
+      setItems((products || []).map((product) => ({
+        ...applyCatalogPromotion(product),
+        quantity: Math.max(1, Number(product.quantity || 1)),
+      })));
+    },
     clearCart() { setItems([]); },
   }), [items]);
 
