@@ -41,6 +41,7 @@ export default async (request) => {
     ? [
         "",
         "🏢 HoReCa պատվեր",
+        ...(payload?.dailyGiftName ? [`🏆 Օրվա նվեր՝ ${clean(payload.dailyGiftName)} — 1 շիշ`] : []),
         `🎁 Սառույցի նվեր՝ ${Math.max(0, Number(payload?.iceGiftKg || 0))} կգ`,
         `💰 Cashback՝ ${Math.max(0, Number(payload?.cashbackRate || 0))}%`,
       ]
