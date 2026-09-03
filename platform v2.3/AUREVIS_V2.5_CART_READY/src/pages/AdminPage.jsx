@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CalendarDays, Check, CircleDollarSign, Gift, History, PackageCheck,
-  CreditCard, Eye, MapPin, MessageCircle, Pencil, Phone, RefreshCw, Search, ShieldCheck,
+  CreditCard, Eye, MapPin, MessageCircle, Pencil, Phone, Printer, RefreshCw, Search, ShieldCheck,
   ShoppingBag, TrendingUp, Users, X,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
@@ -432,6 +432,10 @@ export default function AdminPage() {
             </button>
 
             <div className="admin-order-dialog-heading">
+              <div className="admin-invoice-brand">
+                <img src="/assets/logo.png" alt="AUREVIS" />
+                <span><b>AUREVIS</b><small>PREMIUM SYRUPS & PUREES</small></span>
+              </div>
               <div>
                 <p className="eyebrow">ORDER DETAILS</p>
                 <h2 id="admin-order-title">#{selectedOrder.order_number}</h2>
@@ -471,6 +475,7 @@ export default function AdminPage() {
             {selectedOrder.notes && <div className="admin-order-note"><b>Նշում</b><p>{selectedOrder.notes}</p></div>}
 
             <div className="admin-order-contact-actions">
+              <button type="button" className="print-order" onClick={() => window.print()}><Printer size={18} /> Տպել / PDF</button>
               {selectedOrder.phone && <a href={phoneLink(selectedOrder)}><Phone size={18} /> Զանգել</a>}
               {(selectedOrder.whatsapp_number || selectedOrder.phone) && (
                 <a className="whatsapp" href={whatsappLink(selectedOrder)} target="_blank" rel="noreferrer">
