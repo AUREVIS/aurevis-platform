@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CalendarDays, Check, CircleDollarSign, History, PackageCheck,
-  RefreshCw, ShieldCheck, ShoppingBag, TrendingUp, Users, X,
+  MessageCircle, RefreshCw, ShieldCheck, ShoppingBag, TrendingUp, Users, X,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
@@ -32,7 +32,8 @@ export default function AdminPage() {
         .eq("is_archived", false)
         .order("created_at", { ascending: false }),
       supabase.from("orders").select(`
-        id, order_number, status, total_amount, cashback_earned,
+        id, order_number, status, total_amount, cashback_earned, phone,
+        whatsapp_number, whatsapp_opt_in,
         created_at, updated_at, completed_at,
         profiles(full_name, email, company_name),
         order_items(quantity, product_name)
@@ -77,6 +78,16 @@ export default function AdminPage() {
     else load();
   }
 
+  async function setTier(userId, tier) {
+    setError("");
+    const { error: rpcError } = await supabase.rpc("admin_set_loyalty_tier", {
+      target_user_id: userId,
+      next_tier: tier,
+    });
+    if (rpcError) setError(rpcError.message);
+    else load();
+  }
+
   async function adjustWallet(userId) {
     const amount = Number(walletInputs[userId]);
     if (!Number.isFinite(amount) || amount === 0) return;
@@ -109,6 +120,25 @@ export default function AdminPage() {
     || order.profiles?.full_name
     || order.profiles?.email
     || "Հաճախորդ";
+
+  const whatsappLink = (order) => {
+    let number = String(order.whatsapp_number || order.phone || "").replace(/\D/g, "");
+    if (number.startsWith("0")) number = `374${number.slice(1)}`;
+    if (number.length === 8) number = `374${number}`;
+
+    const statusLabel = {
+      new: "ընդունվել է",
+      confirmed: "հաստատվել է",
+      preparing: "պատրաստվում է",
+      delivery: "առաքվում է",
+      delivering: "առաքվում է",
+      completed: "ավարտված է",
+      cancelled: "չեղարկվել է",
+    }[order.status] || order.status;
+
+    const message = `Բարև ձեզ։ Ձեր AUREVIS #${order.order_number} պատվերի կարգավիճակը՝ ${statusLabel}։ Շնորհակալություն։`;
+    return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  };
 
   return (
     <section className="page admin-page">
@@ -145,13 +175,26 @@ export default function AdminPage() {
 
         <div className="admin-table-wrap">
           <table className="admin-table">
-            <thead><tr><th>Հաճախորդ</th><th>Տեսակ</th><th>Կարգավիճակ</th><th>Wallet փոփոխություն</th><th>Գործողություն</th></tr></thead>
+            <thead><tr><th>Հաճախորդ</th><th>Տեսակ</th><th>Կարգավիճակ</th><th>Մակարդակ</th><th>Wallet փոփոխություն</th><th>Գործողություն</th></tr></thead>
             <tbody>
               {profiles.map((item) => (
                 <tr key={item.id}>
                   <td><b>{item.full_name || item.email}</b><span>{item.company_name || item.phone || item.email}</span></td>
                   <td>{item.role === "admin" ? "Admin" : item.account_type}</td>
                   <td><span className={`status-pill ${item.horeca_status}`}>{item.horeca_status || "active"}</span></td>
+                  <td>
+                    {item.account_type === "horeca" && item.horeca_status === "approved" ? (
+                      <select
+                        className="loyalty-tier-select"
+                        value={item.loyalty_tier || "bronze"}
+                        onChange={(event) => setTier(item.id, event.target.value)}
+                      >
+                        <option value="bronze">Bronze · 5%</option>
+                        <option value="silver">Silver · 7%</option>
+                        <option value="gold">Gold · 9%</option>
+                      </select>
+                    ) : "—"}
+                  </td>
                   <td>
                     <div className="wallet-adjust">
                       <input type="number" placeholder="+1000 / -500" value={walletInputs[item.id] || ""}
@@ -202,6 +245,16 @@ export default function AdminPage() {
                   <option value="completed">Ավարտված</option>
                   <option value="cancelled">Չեղարկված</option>
                 </select>
+                {order.whatsapp_opt_in && (order.whatsapp_number || order.phone) && (
+                  <a
+                    className="admin-whatsapp-link"
+                    href={whatsappLink(order)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <MessageCircle size={17} /> WhatsApp
+                  </a>
+                )}
               </article>
             ))}
           </div>
