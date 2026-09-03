@@ -59,6 +59,7 @@ export default async (request) => {
     "",
     `👤 Հաճախորդ՝ ${clean(payload.customer)}`,
     `📞 Հեռախոս՝ ${clean(payload.phone)}`,
+    `💬 WhatsApp՝ ${payload?.whatsappOptIn ? clean(payload.whatsapp) : "չի ընտրել"}`,
     `📍 Հասցե՝ ${clean(payload.address)}`,
     "",
     "Ապրանքներ՝",
