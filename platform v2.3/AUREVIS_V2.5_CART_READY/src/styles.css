@@ -3,6 +3,52 @@
   color:#08251c;background:#f7f2e8;font-synthesis:none
 }
 
+.account-status-note {
+  margin: -8px 0 18px;
+  color: #64716c;
+  font-size: 0.82rem;
+}
+
+/* WhatsApp order updates */
+.checkout-card .whatsapp-consent {
+  display: flex;
+  grid-template-columns: none;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 13px;
+  border: 1px solid #d8c8ab;
+  border-radius: 12px;
+  background: #f5fbf7;
+  color: #174d3c;
+}
+
+.checkout-card .whatsapp-consent input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #25a95b;
+}
+
+.admin-whatsapp-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 13px;
+  border: 1px solid rgba(80, 215, 130, 0.4);
+  border-radius: 999px;
+  background: #1e9c55;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.admin-whatsapp-link:hover {
+  background: #26b865;
+  color: #fff;
+}
+
 /* Checkout payment methods */
 .checkout-card select {
   width: 100%;
