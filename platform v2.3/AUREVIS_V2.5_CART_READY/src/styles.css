@@ -3127,3 +3127,55 @@ img.modal-product-image {
     transform: none !important;
   }
 }
+.product-art,
+.catalog-modal-art,
+.home-best-image {
+  position: relative;
+}
+
+.catalog-sale-badge,
+.home-sale-badge {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  right: 14px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: #c83232;
+  color: #fff !important;
+  font: 800 .82rem/1 Arial, sans-serif;
+  box-shadow: 0 8px 20px rgba(130, 20, 20, .24);
+}
+
+.catalog-promo-price {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.catalog-promo-price del {
+  color: #8b8b83;
+  font-size: .76rem;
+  text-decoration-thickness: 1.5px;
+}
+
+.catalog-promo-price b {
+  color: #b52323;
+}
+
+.modal-promo-price {
+  margin-top: 5px;
+}
+
+.home-promo-price {
+  justify-content: center;
+}
+
+.home-promo-price b {
+  font-size: 1rem;
+}
