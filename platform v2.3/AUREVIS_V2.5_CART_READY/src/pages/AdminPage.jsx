@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CalendarDays, Check, CircleDollarSign, Gift, History, PackageCheck,
-  MessageCircle, RefreshCw, ShieldCheck, ShoppingBag, TrendingUp, Users, X,
+  CreditCard, Eye, MapPin, MessageCircle, Phone, RefreshCw, ShieldCheck,
+  ShoppingBag, TrendingUp, Users, X,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
@@ -15,6 +16,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [walletInputs, setWalletInputs] = useState({});
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [sales, setSales] = useState({
     today_total: 0,
     month_total: 0,
@@ -32,11 +34,13 @@ export default function AdminPage() {
         .eq("is_archived", false)
         .order("created_at", { ascending: false }),
       supabase.from("orders").select(`
-        id, order_number, status, total_amount, cashback_earned, phone,
+        id, order_number, status, subtotal, total_amount, discount_amount,
+        daily_discount_rate, cashback_rate, cashback_earned, phone,
         whatsapp_number, whatsapp_opt_in,
+        delivery_address, notes, payment_method, ice_gift_kg,
         created_at, updated_at, completed_at,
         profiles(full_name, email, company_name),
-        order_items(quantity, product_name)
+        order_items(id, quantity, product_name, volume, unit_price)
       `).order("created_at", { ascending: false }).limit(200),
       supabase.rpc("admin_sales_summary"),
     ]);
@@ -148,6 +152,14 @@ export default function AdminPage() {
 
     const message = `Բարև ձեզ։ Ձեր AUREVIS #${order.order_number} պատվերի կարգավիճակը՝ ${statusLabel}։ Շնորհակալություն։`;
     return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  };
+
+  const phoneLink = (order) => `tel:${String(order.phone || "").replace(/[^+\d]/g, "")}`;
+
+  const paymentLabel = {
+    cash: "Կանխիկ՝ առաքման պահին",
+    card: "Քարտով",
+    transfer: "Փոխանցումով",
   };
 
   return (
@@ -277,6 +289,13 @@ export default function AdminPage() {
                     <MessageCircle size={17} /> WhatsApp
                   </a>
                 )}
+                <button
+                  type="button"
+                  className="admin-order-details-button"
+                  onClick={() => setSelectedOrder(order)}
+                >
+                  <Eye size={17} /> Մանրամասներ
+                </button>
               </article>
             ))}
           </div>
@@ -303,7 +322,12 @@ export default function AdminPage() {
                     <td><b>{money(order.total_amount)}</b></td>
                     <td>{order.status === "completed" ? money(order.cashback_earned) : "—"}</td>
                     <td>{new Date(order.completed_at || order.updated_at).toLocaleString("hy-AM")}</td>
-                    <td><span className={`order-status ${order.status}`}>{order.status === "completed" ? "Ավարտված" : "Չեղարկված"}</span></td>
+                    <td>
+                      <div className="sales-order-actions">
+                        <span className={`order-status ${order.status}`}>{order.status === "completed" ? "Ավարտված" : "Չեղարկված"}</span>
+                        <button type="button" onClick={() => setSelectedOrder(order)}><Eye size={16} /> Դիտել</button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -311,6 +335,70 @@ export default function AdminPage() {
           </div>
         ) : <p className="admin-empty">Ավարտված վաճառք դեռ չկա։</p>}
       </div>
+
+      {selectedOrder && (
+        <div
+          className="admin-order-modal"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setSelectedOrder(null);
+          }}
+        >
+          <article className="admin-order-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-order-title">
+            <button className="admin-order-modal-close" type="button" aria-label="Փակել" onClick={() => setSelectedOrder(null)}>
+              <X size={22} />
+            </button>
+
+            <div className="admin-order-dialog-heading">
+              <div>
+                <p className="eyebrow">ORDER DETAILS</p>
+                <h2 id="admin-order-title">#{selectedOrder.order_number}</h2>
+                <span>{new Date(selectedOrder.created_at).toLocaleString("hy-AM")}</span>
+              </div>
+              <span className={`order-status ${selectedOrder.status}`}>{selectedOrder.status}</span>
+            </div>
+
+            <div className="admin-order-customer-grid">
+              <div><Users size={18} /><span>Հաճախորդ</span><b>{customerName(selectedOrder)}</b></div>
+              <div><Phone size={18} /><span>Հեռախոս</span><b>{selectedOrder.phone || "—"}</b></div>
+              <div><MapPin size={18} /><span>Առաքման հասցե</span><b>{selectedOrder.delivery_address || "—"}</b></div>
+              <div><CreditCard size={18} /><span>Վճարման ձև</span><b>{paymentLabel[selectedOrder.payment_method] || selectedOrder.payment_method || "—"}</b></div>
+            </div>
+
+            <div className="admin-order-products">
+              <h3>Ապրանքներ</h3>
+              {(selectedOrder.order_items || []).map((item) => (
+                <div key={item.id || `${item.product_name}-${item.quantity}`}>
+                  <span><b>{item.product_name}</b><small>{item.volume || ""}</small></span>
+                  <span>{item.quantity} × {money(item.unit_price)}</span>
+                  <strong>{money(Number(item.unit_price || 0) * Number(item.quantity || 0))}</strong>
+                </div>
+              ))}
+            </div>
+
+            <div className="admin-order-summary">
+              <div><span>Ենթագումար</span><b>{money(selectedOrder.subtotal)}</b></div>
+              {Number(selectedOrder.discount_amount || 0) > 0 && (
+                <div className="discount"><span>Զեղչ՝ {Number(selectedOrder.daily_discount_rate || 0)}%</span><b>−{money(selectedOrder.discount_amount)}</b></div>
+              )}
+              {Number(selectedOrder.ice_gift_kg || 0) > 0 && <div><span>Սառույցի նվեր</span><b>{selectedOrder.ice_gift_kg} կգ</b></div>}
+              <div className="total"><span>Վերջնական գումար</span><b>{money(selectedOrder.total_amount)}</b></div>
+              {Number(selectedOrder.cashback_rate || 0) > 0 && <div><span>Cashback</span><b>{selectedOrder.cashback_rate}%</b></div>}
+            </div>
+
+            {selectedOrder.notes && <div className="admin-order-note"><b>Նշում</b><p>{selectedOrder.notes}</p></div>}
+
+            <div className="admin-order-contact-actions">
+              {selectedOrder.phone && <a href={phoneLink(selectedOrder)}><Phone size={18} /> Զանգել</a>}
+              {(selectedOrder.whatsapp_number || selectedOrder.phone) && (
+                <a className="whatsapp" href={whatsappLink(selectedOrder)} target="_blank" rel="noreferrer">
+                  <MessageCircle size={18} /> Գրել WhatsApp
+                </a>
+              )}
+            </div>
+          </article>
+        </div>
+      )}
     </section>
   );
 }
