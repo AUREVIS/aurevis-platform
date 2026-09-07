@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  Heart,
   Minus,
   Plus,
   Search,
@@ -9,7 +10,8 @@ import {
 import { getCatalogProducts } from "../lib/catalog";
 import { useCart } from "../context/CartContext";
 import { useLanguage } from "../context/LanguageContext";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useFavorites } from "../context/FavoritesContext";
 
 const money = (value, language = "hy") =>
   new Intl.NumberFormat({ hy: "hy-AM", ru: "ru-RU", en: "en-US", ka: "ka-GE" }[language] || "hy-AM")
@@ -278,6 +280,9 @@ function ProductVisual({ product, modal = false }) {
 export default function CatalogPage() {
   const { addItem } = useCart();
   const { language, t } = useLanguage();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedCategory = searchParams.get("category") || "all";
 
   const [addedId, setAddedId] = useState(null);
   const [query, setQuery] = useState("");
@@ -335,6 +340,27 @@ export default function CatalogPage() {
 
     return ["all", ...unique];
   }, [products]);
+
+  useEffect(() => {
+    const requested = String(requestedCategory).toLowerCase();
+    const aliases = requested === "syrups" || requested === "syrup"
+      ? ["syrups", "syrup"]
+      : requested === "purees" || requested === "puree"
+        ? ["purees", "puree"]
+        : [requested];
+    const available = aliases.find((item) => categories.includes(item));
+    setCategory(available || "all");
+  }, [requestedCategory, categories]);
+
+  function selectCategory(nextCategory) {
+    setCategory(nextCategory);
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (nextCategory === "all") nextParams.delete("category");
+    else nextParams.set("category", nextCategory);
+
+    setSearchParams(nextParams, { replace: true });
+  }
 
   const visible = useMemo(() => {
     const searchText = normalizeText(query);
@@ -422,7 +448,7 @@ export default function CatalogPage() {
               className={
                 category === item ? "active" : ""
               }
-              onClick={() => setCategory(item)}
+              onClick={() => selectCategory(item)}
             >
               {item === "all"
                 ? t("all")
@@ -463,6 +489,14 @@ export default function CatalogPage() {
               {product.discountPercent > 0 && (
                 <span className="catalog-sale-badge">−{product.discountPercent}%</span>
               )}
+              <button
+                type="button"
+                className={`product-favorite-button ${isFavorite(product.id) ? "active" : ""}`}
+                aria-label="Ավելացնել ընտրյալների մեջ"
+                onClick={(event) => { event.stopPropagation(); toggleFavorite(product.id); }}
+              >
+                <Heart size={19} fill={isFavorite(product.id) ? "currentColor" : "none"} />
+              </button>
               <ProductVisual product={product} />
             </div>
 
@@ -561,6 +595,14 @@ export default function CatalogPage() {
               {selectedProduct.discountPercent > 0 && (
                 <span className="catalog-sale-badge modal-sale-badge">−{selectedProduct.discountPercent}%</span>
               )}
+              <button
+                type="button"
+                className={`product-favorite-button modal-favorite-button ${isFavorite(selectedProduct.id) ? "active" : ""}`}
+                onClick={() => toggleFavorite(selectedProduct.id)}
+                aria-label="Ավելացնել ընտրյալների մեջ"
+              >
+                <Heart size={20} fill={isFavorite(selectedProduct.id) ? "currentColor" : "none"} />
+              </button>
               <ProductVisual
                 product={selectedProduct}
                 modal

@@ -120,13 +120,14 @@ export default function HomePage() {
           </p>
 
           <div className="hero-buttons">
-            <Link className="button gold" to="/catalog">
-              {t("openCatalog")}
+            <Link className="button gold" to="/catalog?category=syrups">
+              {t("categorySyrups")}
               <ArrowRight size={18} />
             </Link>
 
-            <Link className="button glass" to="/horeca-benefits">
-              {t("becomePartner")}
+            <Link className="button glass" to="/catalog?category=purees">
+              {t("categoryPurees")}
+              <ArrowRight size={18} />
             </Link>
           </div>
 
@@ -162,7 +163,7 @@ export default function HomePage() {
         </div>
 
         <div className="home-category-grid">
-          <Link className="home-category-card" to="/catalog">
+          <Link className="home-category-card" to="/catalog?category=syrups">
             <img src="/assets/syrup-strawberry.webp" alt={t("categorySyrups")} />
             <span className="home-category-shade" />
             <div>
@@ -173,7 +174,7 @@ export default function HomePage() {
             </div>
           </Link>
 
-          <Link className="home-category-card" to="/catalog">
+          <Link className="home-category-card" to="/catalog?category=purees">
             <img src="/assets/Mango.png" alt={t("categoryPurees")} />
             <span className="home-category-shade" />
             <div>
