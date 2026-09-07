@@ -5,6 +5,7 @@ import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 import "./styles.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <LanguageProvider>
         <AuthProvider>
-          <CartProvider><App /></CartProvider>
+          <FavoritesProvider>
+            <CartProvider><App /></CartProvider>
+          </FavoritesProvider>
         </AuthProvider>
       </LanguageProvider>
     </BrowserRouter>
