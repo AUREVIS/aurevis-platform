@@ -30,6 +30,17 @@ const categoryLabels = {
   other: "categoryOther",
 };
 
+const catalogPriority = (product) => {
+  const category = String(product?.category || "").toLowerCase();
+  const name = normalizeText(`${product?.name || ""} ${product?.nameHy || ""}`);
+
+  if (["syrup", "syrups"].includes(category)) return 0;
+  if (["puree", "purees"].includes(category)) return 1;
+  if (name.includes("croissant") || name.includes("կրուասան")) return 100;
+  if (["bakery", "bread", "desserts"].includes(category)) return 90;
+  return 50;
+};
+
 const syrupImages = [
   { names: ["strawberry"], image: "/assets/syrups/strawberry.png" },
   { names: ["raspberry"], image: "/assets/syrups/raspberry.png" },
@@ -383,7 +394,7 @@ export default function CatalogPage() {
         product.category === category;
 
       return matchesQuery && matchesCategory;
-    });
+    }).sort((first, second) => catalogPriority(first) - catalogPriority(second));
   }, [products, query, category]);
 
   function handleAddToCart(product) {
