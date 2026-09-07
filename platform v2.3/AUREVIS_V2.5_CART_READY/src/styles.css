@@ -515,8 +515,28 @@
 .hero-gold-glow{position:absolute;inset:0;background:radial-gradient(circle at 76% 28%,rgba(222,180,82,.28),transparent 30%);z-index:1;pointer-events:none}
 .premium-hero .hero-copy{max-width:780px;z-index:3}.premium-hero h1{font-size:clamp(3.8rem,7vw,7rem)}
 .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:42px}
-.hero-stats article{padding:15px;border-radius:18px;border:1px solid #ffffff1d;background:#ffffff0b;backdrop-filter:blur(12px)}
-.hero-stats b{display:block;color:#e8c46d;font:700 1.45rem Georgia}.hero-stats span{display:block;color:#d8e4de;font-size:.72rem;margin-top:4px}
+.hero-stat-card{
+  position:relative;
+  display:block;
+  min-height:104px;
+  padding:15px;
+  overflow:hidden;
+  border:1px solid #ffffff26;
+  border-radius:18px;
+  background:linear-gradient(145deg,#ffffff12,#ffffff07);
+  color:#fff;
+  text-decoration:none;
+  backdrop-filter:blur(12px);
+  transition:transform .25s ease,border-color .25s ease,background .25s ease,box-shadow .25s ease;
+  animation:heroStatReveal .65s both;
+}
+.hero-stat-card:nth-child(2){animation-delay:.08s}.hero-stat-card:nth-child(3){animation-delay:.16s}.hero-stat-card:nth-child(4){animation-delay:.24s}
+.hero-stat-card:hover{transform:translateY(-6px);border-color:#e8c46d99;background:#ffffff18;box-shadow:0 18px 30px #0000002e}
+.hero-stat-card svg{position:absolute;top:15px;right:15px;color:#e8c46d;transition:transform .25s ease}
+.hero-stat-card:hover svg{transform:scale(1.16) rotate(-7deg)}
+.hero-stat-card b{display:block;padding-right:22px;color:#e8c46d;font:700 1.45rem Georgia}
+.hero-stat-card span{display:block;color:#d8e4de;font-size:.72rem;line-height:1.35;margin-top:7px}
+@keyframes heroStatReveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .hero-product-stage{position:absolute;right:4vw;top:11%;bottom:8%;width:40%;z-index:3}
 .stage-card{position:absolute;inset:0;overflow:hidden;border-radius:30px;border:1px solid #e8c46d40;background:#061d16;box-shadow:0 32px 80px #0007}
 .stage-card img{width:100%;height:100%;object-fit:cover;display:block}.stage-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(3,17,13,.92))}
