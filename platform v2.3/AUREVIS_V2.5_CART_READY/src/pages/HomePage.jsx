@@ -39,6 +39,35 @@ export default function HomePage() {
   const { addItem } = useCart();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [addedId, setAddedId] = useState(null);
+  const [heroCounts, setHeroCounts] = useState({ syrups: 0, purees: 0, recipes: 0 });
+
+  useEffect(() => {
+    const finalCounts = { syrups: 37, purees: 25, recipes: 100 };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setHeroCounts(finalCounts);
+      return undefined;
+    }
+
+    const startedAt = performance.now();
+    let frameId;
+
+    const animateCounts = (time) => {
+      const progress = Math.min((time - startedAt) / 1100, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      setHeroCounts({
+        syrups: Math.round(finalCounts.syrups * eased),
+        purees: Math.round(finalCounts.purees * eased),
+        recipes: Math.round(finalCounts.recipes * eased),
+      });
+
+      if (progress < 1) frameId = requestAnimationFrame(animateCounts);
+    };
+
+    frameId = requestAnimationFrame(animateCounts);
+    return () => cancelAnimationFrame(frameId);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -132,25 +161,29 @@ export default function HomePage() {
           </div>
 
           <div className="hero-stats">
-            <article>
-              <b>37+</b>
+            <Link className="hero-stat-card" to="/catalog?category=syrups">
+              <Sparkles size={17} />
+              <b>{heroCounts.syrups}+</b>
               <span>{t("syrupFlavors")}</span>
-            </article>
+            </Link>
 
-            <article>
-              <b>10+</b>
+            <Link className="hero-stat-card" to="/catalog?category=purees">
+              <Leaf size={17} />
+              <b>{heroCounts.purees}+</b>
               <span>{t("purees")}</span>
-            </article>
+            </Link>
 
-            <article>
+            <Link className="hero-stat-card" to="/academy">
+              <ChefHat size={17} />
+              <b>{heroCounts.recipes}+</b>
+              <span>{t("recipes")}</span>
+            </Link>
+
+            <Link className="hero-stat-card" to="/catalog">
+              <Truck size={17} />
               <b>{t("free")}</b>
               <span>{t("delivery")}</span>
-            </article>
-
-            <article>
-              <b>Bonus</b>
-              <span>{t("unifiedBalance")}</span>
-            </article>
+            </Link>
           </div>
         </div>
       </section>
