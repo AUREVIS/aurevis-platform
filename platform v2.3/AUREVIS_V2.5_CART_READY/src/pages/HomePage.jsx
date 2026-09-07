@@ -72,9 +72,9 @@ export default function HomePage() {
     <>
       <section className="hero premium-hero">
         <img
-          src="/assets/hero.jpg"
+          src="/assets/hero-seven-bottles.png"
           alt="AUREVIS collection"
-          className="hero-bg"
+          className="hero-bg hero-collection-bg"
         />
 
         <div className="hero-overlay" />
