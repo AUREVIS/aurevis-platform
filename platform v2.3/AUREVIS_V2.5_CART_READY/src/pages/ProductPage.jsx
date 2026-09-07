@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, BadgeCheck, Minus, Plus, ShoppingBag, Sparkles } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Heart, Minus, Plus, ShoppingBag, Sparkles } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { getCatalogProducts } from "../lib/catalog";
 import { useCart } from "../context/CartContext";
 import { useLanguage } from "../context/LanguageContext";
 import { getCatalogImage } from "./CatalogPage";
+import { useFavorites } from "../context/FavoritesContext";
 
 const money = (value, language = "hy") =>
   `${new Intl.NumberFormat({ hy: "hy-AM", ru: "ru-RU", en: "en-US", ka: "ka-GE" }[language] || "hy-AM").format(Number(value || 0))} ֏`;
 
 const copy = {
-  hy: { back: "Վերադառնալ կատալոգ", syrup: "Պրոֆեսիոնալ օշարակ", puree: "Պրոֆեսիոնալ պյուրե", volume: "Ծավալ", dose: "Առաջարկվող չափաբաժին", yield: "Մոտավոր բաժակներ", syrupDose: "15–20 մլ", pureeDose: "25–30 մլ", syrupYield: "մինչև 50 բաժակ", pureeYield: "մինչև 33 բաժակ", add: "Ավելացնել զամբյուղ", added: "Ավելացված է", quality: "Պրոֆեսիոնալ որակ", stable: "Կայուն համ և գույն յուրաքանչյուր մատուցման ժամանակ", use: "Հարմար է լիմոնադների, սուրճերի, թեյերի, կոկտեյլների և աղանդերի համար։", unavailable: "Ապրանքը չի գտնվել կամ այլևս հասանելի չէ։" },
+  hy: { back: "Վերադառնալ կատալոգ", syrup: "Պրոֆեսիոնալ օշարակ", puree: "Պրոֆեսիոնալ խյուս", volume: "Ծավալ", dose: "Առաջարկվող չափաբաժին", yield: "Մոտավոր բաժակներ", syrupDose: "15–20 մլ", pureeDose: "25–30 մլ", syrupYield: "մինչև 50 բաժակ", pureeYield: "մինչև 33 բաժակ", add: "Ավելացնել զամբյուղ", added: "Ավելացված է", quality: "Պրոֆեսիոնալ որակ", stable: "Կայուն համ և գույն յուրաքանչյուր մատուցման ժամանակ", use: "Հարմար է լիմոնադների, սուրճերի, թեյերի, կոկտեյլների և աղանդերի համար։", unavailable: "Ապրանքը չի գտնվել կամ այլևս հասանելի չէ։" },
   ru: { back: "Вернуться в каталог", syrup: "Профессиональный сироп", puree: "Профессиональное пюре", volume: "Объём", dose: "Рекомендуемая дозировка", yield: "Примерное количество порций", syrupDose: "15–20 мл", pureeDose: "25–30 мл", syrupYield: "до 50 порций", pureeYield: "до 33 порций", add: "Добавить в корзину", added: "Добавлено", quality: "Профессиональное качество", stable: "Стабильный вкус и цвет в каждой подаче", use: "Подходит для лимонадов, кофе, чая, коктейлей и десертов.", unavailable: "Товар не найден или больше недоступен." },
   en: { back: "Back to catalog", syrup: "Professional syrup", puree: "Professional purée", volume: "Volume", dose: "Recommended serving", yield: "Approximate yield", syrupDose: "15–20 ml", pureeDose: "25–30 ml", syrupYield: "up to 50 drinks", pureeYield: "up to 33 drinks", add: "Add to cart", added: "Added", quality: "Professional quality", stable: "Consistent flavor and color in every serve", use: "Ideal for lemonades, coffee, tea, cocktails and desserts.", unavailable: "This product could not be found or is no longer available." },
   ka: { back: "კატალოგში დაბრუნება", syrup: "პროფესიონალური სიროფი", puree: "პროფესიონალური პიურე", volume: "მოცულობა", dose: "რეკომენდებული დოზა", yield: "დაახლოებით პორციები", syrupDose: "15–20 მლ", pureeDose: "25–30 მლ", syrupYield: "50-მდე სასმელი", pureeYield: "33-მდე სასმელი", add: "კალათაში დამატება", added: "დამატებულია", quality: "პროფესიონალური ხარისხი", stable: "სტაბილური გემო და ფერი ყოველ ჯერზე", use: "იდეალურია ლიმონათებისთვის, ყავისთვის, ჩაისთვის, კოქტეილებისა და დესერტებისთვის.", unavailable: "პროდუქტი ვერ მოიძებნა ან აღარ არის ხელმისაწვდომი." },
@@ -20,6 +21,7 @@ export default function ProductPage() {
   const { productId } = useParams();
   const { language } = useLanguage();
   const { addItem } = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const text = copy[language] || copy.hy;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,6 +58,9 @@ export default function ProductPage() {
         <div className={`product-page-visual ${isPuree ? "puree" : "syrup"}`}>
           {product.discountPercent > 0 && <span className="catalog-sale-badge">−{product.discountPercent}%</span>}
           {image ? <img src={image} alt={product.name} /> : <div className="product-page-placeholder">AUREVIS</div>}
+          <button type="button" className={`product-page-favorite ${isFavorite(product.id) ? "active" : ""}`} onClick={() => toggleFavorite(product.id)} aria-label="Ընտրյալներ">
+            <Heart size={22} fill={isFavorite(product.id) ? "currentColor" : "none"} />
+          </button>
         </div>
 
         <div className="product-page-copy">
